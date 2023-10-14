@@ -124,5 +124,7 @@ override.tf.json
 # Ignore CLI configuration files
 .terraformrc
 terraform.rc
+# Ignorar diretório .terraform/
+.terraform/
 
 # End of https://www.toptal.com/developers/gitignore/api/terraform,intellij+all
