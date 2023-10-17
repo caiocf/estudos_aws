@@ -7,8 +7,8 @@ variable "bucket_name" {
   type        = string
   nullable = false
   validation {
-    condition     = can(regex("^[a-z0-9.-]{3,63}$", var.bucket_name))
-    error_message = "O nome do bucket não é válido. Deve conter apenas letras minúsculas, números, traços e pontos, e ter entre 3 e 63 caracteres."
+    condition = can(regex("^[a-z0-9.-]{3,63}$", var.bucket_name))
+    error_message = "O nome do 'bucket_name' não é válido. Deve conter apenas letras minúsculas, números, traços e pontos, e ter entre 3 e 63 caracteres."
   }
 }
 
@@ -18,6 +18,8 @@ variable "bucket_versioning" {
   default = "Disabled"
   validation {
      condition = var.bucket_versioning == null || can(contains(["Enabled","Suspended","Disabled"],var.bucket_versioning))
-     error_message = "Error ao configurar 'bucket_versioning'. Os valores aceitos são somente Enable ou Disabled"
+     error_message = "Error ao configurar 'bucket_versioning'. Os valores aceitos são somente Enabled ou Disabled ou Suspended"
   }
+
+
 }
