@@ -9,33 +9,18 @@ variable "name" {
   }
 }
 
-
-
-
 variable "name_suffix" {
   description = "(Optional) Definição de criação para cada ambiente (dev/hom/prod)"
   type = string
   default = ""
 
   validation {
-    #condition = can(regex("^(?=.{3,63}$)(?!.*\\.{2})(?!.*\\-\\-ol-s3$)(?!.*\\-s3alias$)(?!^xn--)(?!^sthree-)(?!^sthree-configurator-)(?![0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+$)[a-z0-9][a-z0-9.-]*[a-z0-9]$", var.name_suffix)))
     condition = can(regex("^[a-z0-9.-]{3,63}$", var.name_suffix))
     error_message = "Erro ao configurar o 'name_suffix' do bucket. Conferir as regras definidas https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucketnamingrules.html"
   }
-
-
 }
 
 ## Tagging block
-variable "s3_bucket_type" {
-  description = "(Required) Define o tipo do uso do bucket"
-  type = string
-  validation {
-    condition = contains(["cloudfront","private","x-account"],var.s3_bucket_type)
-    error_message = "Erro ao configurar 's3_bucket_type'. Valores validos são cloudfront, private e x-account"
-  }
-}
-
 variable "s3_data_classification" {
   description = "(Required) Classificação do dados"
   type = string
@@ -48,6 +33,7 @@ variable "s3_data_classification" {
 variable "s3_data_retention" {
   description = "(Required) Politica de retenção de dias dos dados"
   type = number
+  default = 0
   validation {
     condition =  can(signum(var.s3_data_retention) >= 0)
     error_message = "Erro ao configurar 's3_data_retention'. O valores deve ser um inteiro positivo"
@@ -113,7 +99,10 @@ variable "lifecycle_versioning" {
     keep_last_versions = optional(number, null)
     keep_for_days = optional(number, null)
   })
-  default = null
+  default = {
+    keep_last_versions = 3
+    keep_for_days = 7
+  }
 
   validation {
     condition = try(var.lifecycle_versioning.keep_last_versions,null) == null ||   can(signum(var.lifecycle_versioning.keep_last_versions) >= 0)
@@ -125,49 +114,6 @@ variable "lifecycle_versioning" {
   }
 }
 
-variable "lifecycle_transition" {
-  description = "(Optional) Variavel que configura as regras de lifecyle"
-  type = object({
-    id          = optional(string, "Lifecycle intelligent tiering")
-    status      = string
-    transitions = optional(list(object({
-      days = number
-      storage_class = string
-    })),[ ])
-    nonconcurrent_version_transitions = optional(list(object({
-      days = number
-      storage_class = string
-    })),[ ])
-  })
-  default = {
-    status = null
-  }
-
-  validation {
-    condition =   var.lifecycle_transition.status == null || can(contains(["Enabled", "Disabled"], var.lifecycle_transition.status))
-    error_message = "Erro ao configurar 'status'. Deve ser 'Enabled' ou 'Disabled'."
-  }
-
-  validation {
-    condition = alltrue([for t in var.lifecycle_transition.transitions : can(index(["STANDARD", "INTELLIGENT_TIERING", "GLACIER", "DEEP_ARCHIVE"], t.storage_class))])
-    error_message = "Erro ao configurar 'transitions'. O campo 'storage_class' deve conter valores válidos (STANDARD, INTELLIGENT_TIERING, GLACIER, DEEP_ARCHIVE)."
-  }
-
-  validation {
-    condition = alltrue([for t in var.lifecycle_transition.nonconcurrent_version_transitions : can(index(["STANDARD", "INTELLIGENT_TIERING", "GLACIER", "DEEP_ARCHIVE"], t.storage_class))])
-    error_message = "Erro ao configurar 'concurrent_version_transitions'. O campo 'storage_class' deve conter valores válidos (STANDARD, INTELLIGENT_TIERING, GLACIER, DEEP_ARCHIVE)."
-  }
-  validation {
-    condition = alltrue([for t in var.lifecycle_transition.transitions : can(signum(t.days) > 0) ])
-    error_message = "Erro ao configurar 'transitions'. Os valores de 'days' em todas as transições devem ser números positivos."
-  }
-
-  validation {
-    condition = alltrue([for t in var.lifecycle_transition.nonconcurrent_version_transitions : can(signum(t.days) > 0) ])
-    error_message = "Erro ao configurar 'noconcurrent_version_transitions'. Os valores de 'days' em todas as transições devem ser números positivos."
-  }
-}
-
 variable "lifecycle_multipart" {
   description = "(Optional) Variavel que habilita/desabilita a função aborta o upload multipart."
   type = object({
@@ -176,7 +122,7 @@ variable "lifecycle_multipart" {
     days_after_initiation = optional(number,7)
   })
   default = {
-    status = null
+    status = "Enabled"
   }
 
   validation {

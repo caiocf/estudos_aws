@@ -10,32 +10,40 @@ variable "name" {
 }
 
 
+variable "cross_account_policy" {
+  description = "(Required) Variavel para configurar acesso Cross Account ao Bucket"
+  type = list(object({
+      access_mode = string
+      access_roles = list(string)
+      organization_paths = list(string)
 
+  }))
+ /* default = [
+    {
+    access_mode = "Full"
+    access_roles = ["arn:aws:iam::account_id:role/RoleName1", "arn:aws:iam::account_id:role/RoleName2"]
+    organization_paths = ["ou=Finance,ou=Departments,dc=example,dc=com", "ou=HR,ou=Departments,dc=example,dc=com"]
+    }
+  ]*/
+
+  validation {
+    condition = alltrue( [ for p in var.cross_account_policy : contains(["Full","Read", "Write"], p.access_mode)  ] )
+    error_message = "Erro ao configurar 'access_mode'"
+  }
+}
 
 variable "name_suffix" {
   description = "(Optional) Definição de criação para cada ambiente (dev/hom/prod)"
   type = string
-  default = ""
+  default = "dev"
 
   validation {
-    #condition = can(regex("^(?=.{3,63}$)(?!.*\\.{2})(?!.*\\-\\-ol-s3$)(?!.*\\-s3alias$)(?!^xn--)(?!^sthree-)(?!^sthree-configurator-)(?![0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+$)[a-z0-9][a-z0-9.-]*[a-z0-9]$", var.name_suffix)))
     condition = can(regex("^[a-z0-9.-]{3,63}$", var.name_suffix))
     error_message = "Erro ao configurar o 'name_suffix' do bucket. Conferir as regras definidas https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucketnamingrules.html"
   }
-
-
 }
 
 ## Tagging block
-variable "s3_bucket_type" {
-  description = "(Required) Define o tipo do uso do bucket"
-  type = string
-  validation {
-    condition = contains(["cloudfront","private","x-account"],var.s3_bucket_type)
-    error_message = "Erro ao configurar 's3_bucket_type'. Valores validos são cloudfront, private e x-account"
-  }
-}
-
 variable "s3_data_classification" {
   description = "(Required) Classificação do dados"
   type = string
@@ -48,6 +56,7 @@ variable "s3_data_classification" {
 variable "s3_data_retention" {
   description = "(Required) Politica de retenção de dias dos dados"
   type = number
+  default = 0
   validation {
     condition =  can(signum(var.s3_data_retention) >= 0)
     error_message = "Erro ao configurar 's3_data_retention'. O valores deve ser um inteiro positivo"
@@ -113,7 +122,10 @@ variable "lifecycle_versioning" {
     keep_last_versions = optional(number, null)
     keep_for_days = optional(number, null)
   })
-  default = null
+  default = {
+    keep_last_versions = 3
+    keep_for_days = 7
+  }
 
   validation {
     condition = try(var.lifecycle_versioning.keep_last_versions,null) == null ||   can(signum(var.lifecycle_versioning.keep_last_versions) >= 0)
@@ -140,11 +152,23 @@ variable "lifecycle_transition" {
     })),[ ])
   })
   default = {
-    status = null
+    status = "Enabled"
+    transitions = [
+      {
+        days = 0
+        storage_class = "INTELLIGENT_TIERING"
+      }
+    ]
+    nonconcurrent_version_transitions = [
+      {
+        days = 0
+        storage_class = "INTELLIGENT_TIERING"
+      }
+    ]
   }
 
   validation {
-    condition =   var.lifecycle_transition.status == null || can(contains(["Enabled", "Disabled"], var.lifecycle_transition.status))
+    condition =   var.lifecycle_transition.status != null || can(contains(["Enabled", "Disabled"], var.lifecycle_transition.status))
     error_message = "Erro ao configurar 'status'. Deve ser 'Enabled' ou 'Disabled'."
   }
 
@@ -176,7 +200,7 @@ variable "lifecycle_multipart" {
     days_after_initiation = optional(number,7)
   })
   default = {
-    status = null
+    status = "Enabled"
   }
 
   validation {
