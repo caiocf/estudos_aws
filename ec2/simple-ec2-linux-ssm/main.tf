@@ -1,15 +1,24 @@
 # Defina a versão do provider AWS
 provider "aws" {
-  region = "us-east-1"
+  region = var.region
 }
 
 
 resource "aws_security_group" "allow_ssh" {
-  name_prefix = "allow-ssh-"
+  vpc_id = local.vpc_id
+  name = "allow-ssh-icmp"
+  description = "Regra para SSH e ICMP"
   ingress {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 8 # Código ICMP para Echo Request (ping)
+    to_port     = 0 # ICMP não usa portas de destino, então configuramos como 0
+    protocol    = "icmp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
@@ -18,6 +27,9 @@ resource "aws_security_group" "allow_ssh" {
     to_port     = 0
     protocol    = "-1"          # "-1" representa todos os protocolos
     cidr_blocks = ["0.0.0.0/0"]
+  }
+  tags = {
+    Name = "allow-ssh-icmp"
   }
 }
 
@@ -28,13 +40,16 @@ resource "aws_key_pair" "minha_chave" {
 
 
 resource "aws_instance" "this" {
+  depends_on = [aws_security_group.allow_ssh,aws_iam_instance_profile.ec2_instance_profile]
   ami = data.aws_ami.amazonLinux.id
 
   instance_type = "t2.micro"
 
   key_name = aws_key_pair.minha_chave.key_name
   iam_instance_profile = aws_iam_instance_profile.ec2_instance_profile.name
-  security_groups = [aws_security_group.allow_ssh.name]
+
+  vpc_security_group_ids = [aws_security_group.allow_ssh.id]
+  subnet_id = local.first_subnet_id
 
   associate_public_ip_address = true
   user_data = <<EOF
@@ -43,3 +58,4 @@ resource "aws_instance" "this" {
               yum install -y https://s3.amazonaws.com/session-manager-downloads/plugin/latest/linux_64bit/session-manager-plugin.rpm
               EOF
 }
+
