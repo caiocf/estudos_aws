@@ -6,6 +6,10 @@ output "vpc_arn" {
   value = aws_vpc.main.arn
 }
 
+output "vpc_name" {
+  value = var.name_vpc
+}
+
 output "subnets_private_id" {
   value = aws_subnet.private_subnets.*.id
 }
