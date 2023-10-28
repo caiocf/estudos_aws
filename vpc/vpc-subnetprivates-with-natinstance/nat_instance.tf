@@ -1,6 +1,6 @@
 # Security Group for test instance
 resource "aws_security_group" "gluon-sg-nat-instance" {
-  name        = "sg-nat-instance"
+  name        = "group-sg-nat-instance"
   description = "Security Group for NAT instance"
   vpc_id      = aws_vpc.main.id
   tags = {
