@@ -3,6 +3,8 @@ provider "aws" {
   region = var.region
 }
 
+
+
 resource "random_id" "unique_suffix" {
   byte_length = 4
 }
@@ -49,7 +51,7 @@ resource "aws_instance" "this" {
 
   instance_type = var.instance_type
 
-  key_name = local.keyNameSSH
+  key_name = aws_key_pair.keyPairSSH.key_name
   iam_instance_profile = aws_iam_instance_profile.ec2_instance_profile.name
 
   vpc_security_group_ids = [aws_security_group.allow_ssh.id]

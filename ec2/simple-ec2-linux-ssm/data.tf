@@ -60,6 +60,6 @@ data "aws_subnet" "subnets_list_public" {
   id       = each.value
 }
 
-data "aws_key_pair" "keyNameSSH" {
+/*data "aws_key_pair" "keyNameSSH" {
   key_name = local.keyNameSSH
-}
+}*/
