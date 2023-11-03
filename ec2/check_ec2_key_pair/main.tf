@@ -4,14 +4,7 @@ provider "aws" {
 }
 
 
-
-resource "random_id" "unique_suffix" {
-  byte_length = 4
-}
-
 resource "aws_security_group" "allow_ssh" {
-  vpc_id = local.vpc_id
-  #name = "allow-ssh-icmp"
   description = "Regra para SSH e ICMP"
   ingress {
     from_port   = 22
@@ -33,10 +26,8 @@ resource "aws_security_group" "allow_ssh" {
     protocol    = "-1"          # "-1" representa todos os protocolos
     cidr_blocks = ["0.0.0.0/0"]
   }
- /* tags = {
-    Name = "allow-ssh-icmp"
-  }*/
 }
+
 
 resource "aws_key_pair" "keyPairSSH" {
   depends_on = [null_resource.checkKeyPair]
@@ -48,37 +39,20 @@ resource "aws_key_pair" "keyPairSSH" {
 
 resource "aws_instance" "this" {
 
-  depends_on = [aws_security_group.allow_ssh,
-    aws_iam_instance_profile.ec2_instance_profile,
-    null_resource.checkKeyPair,
-    null_resource.check_role_exists,
-    aws_iam_instance_profile.ec2_instance_profile,
-    null_resource.checkEc2InstanceProfile]
+  depends_on = [
+    null_resource.checkKeyPair]
   ami = data.aws_ami.amazonLinux.id
 
   instance_type = var.instance_type
 
   key_name = local.keyPairExist == true ? local.keyNameSSH : aws_key_pair.keyPairSSH[0].key_name
-  iam_instance_profile = local.ec2InstanceProfileExist == true ? local.ec2InstanceProfile : aws_iam_instance_profile.ec2_instance_profile[0].name
 
   vpc_security_group_ids = [aws_security_group.allow_ssh.id]
-  subnet_id = local.subnet_id
-
-  source_dest_check = var.source_dest_check
-
-  tags = {
-    Name = var.instance_name
-  }
 
   provisioner "local-exec" {
     command = "rm -rf ${path.module}/*.txt"
   }
-
-  user_data = <<EOF
-              #!/bin/bash
-              # Instalação do SSM Agent
-              yum install -y https://s3.amazonaws.com/session-manager-downloads/plugin/latest/linux_64bit/session-manager-plugin.rpm
-              EOF
 }
+
 
 

@@ -1,0 +1,1 @@
+https://medium.com/@fidelissauro/disaster-recovery-projetando-e-gerenciando-arquiteturas-multi-region-na-aws-com-terraform-8e9a6a9a8669

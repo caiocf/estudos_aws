@@ -22,3 +22,7 @@ output "subnet_b_id" {
 output "subnet_c_id" {
   value = aws_subnet.public_subnets[2].id
 }
+
+output "region" {
+  value = var.region
+}

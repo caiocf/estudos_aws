@@ -1,10 +1,17 @@
 resource "aws_iam_instance_profile" "ec2_instance_profile" {
-  name = "ec2-instance-profile"
-  role = aws_iam_role.ec2_role.name
+  depends_on = [null_resource.checkEc2InstanceProfile,aws_iam_role.ec2_role]
+
+  count = local.ec2InstanceProfileExist == false ? 1 : 0
+
+  name =  local.ec2InstanceProfile
+  role = local.roleEc2Name
 }
 
 resource "aws_iam_role" "ec2_role" {
-  name = "ec2-role"
+  depends_on = [null_resource.check_role_exists]
+  count = local.roleExist == false ? 1 : 0
+
+  name = local.roleEc2Name
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
     Statement = [
@@ -20,6 +27,9 @@ resource "aws_iam_role" "ec2_role" {
 }
 
 resource "aws_iam_policy" "ssm_policy" {
+  depends_on = [null_resource.check_role_exists]
+  count = local.roleExist == false ? 1 : 0
+
   name        = "ssm-session-manager-policy"
   description = "Policy for AWS Systems Manager Session Manager"
 
@@ -46,14 +56,11 @@ resource "aws_iam_policy" "ssm_policy" {
 }
 
 resource "aws_iam_policy_attachment" "ssm_policy_attachment" {
+  depends_on = [null_resource.check_role_exists,aws_iam_policy.ssm_policy]
+  count = local.roleExist == false ? 1 : 0
+
   name       = "ssm_policy_attachment"
-  policy_arn = aws_iam_policy.ssm_policy.arn
-  roles = [aws_iam_role.ec2_role.name]
+  policy_arn = aws_iam_policy.ssm_policy[0].arn
+  roles = [aws_iam_role.ec2_role[0].name]
 }
 
-
-/*resource "aws_iam_policy_attachment" "attach_amazon_ec2_role_for_ssm" {
-  name       = "attach-amazon-ec2-role-for-ssm"
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM"
-  roles      = [aws_iam_role.ec2_role.name]
-}*/
