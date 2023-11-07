@@ -2,6 +2,10 @@ output "vpc_id" {
   value = aws_vpc.main.id
 }
 
+output "default_route_table_id" {
+  value = aws_vpc.main.default_route_table_id
+}
+
 output "vpc_arn" {
   value = aws_vpc.main.arn
 }
@@ -9,7 +13,6 @@ output "vpc_arn" {
 output "cidr_block" {
   value = aws_vpc.main.cidr_block
 }
-
 
 output "subnet_a_id" {
   value = aws_subnet.public_subnets[0].id
