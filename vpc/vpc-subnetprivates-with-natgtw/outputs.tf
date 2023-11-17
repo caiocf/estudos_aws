@@ -44,3 +44,11 @@ output "subnet_public_b_id" {
 output "subnet_public_c_id" {
   value = aws_subnet.public_subnets[2].id
 }
+
+output "region" {
+  value = var.region
+}
+
+output "default_route_table_id" {
+  value = aws_vpc.main.default_route_table_id
+}
