@@ -18,7 +18,6 @@ data "aws_ami" "amazonLinux_regiao1"{
   provider = aws.primary
 }
 
-
 data "aws_iam_policy_document" "policyt_bucket_s3_example" {
   statement {
     sid = "AllowAccessStorageGatewayBucket"

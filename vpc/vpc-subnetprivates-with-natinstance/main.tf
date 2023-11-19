@@ -2,6 +2,12 @@ provider "aws" {
   region = var.region
 }
 
+resource "random_string" "ssh_key_name" {
+  length  = 8  # ou qualquer comprimento que você desejar
+  special = false # definir como true se caracteres especiais forem necessários
+  upper   = false # definir como true se letras maiúsculas forem necessárias
+}
+
 resource "aws_vpc" "main" {
   cidr_block = var.cidr_vpc
   instance_tenancy = "default"
@@ -9,7 +15,7 @@ resource "aws_vpc" "main" {
   enable_dns_support   = true
   enable_dns_hostnames = true
 
-  tags_all = {
+  tags = {
     Name = var.name_vpc
   }
 }
