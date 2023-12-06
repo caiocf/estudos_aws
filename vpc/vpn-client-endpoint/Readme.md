@@ -1,66 +1,38 @@
-# Projeto VPN Site-to-Site com Terraform e pfSense
+# Projeto: AWS VPN Endpoint com Mutual Authentication
 
-Este projeto visa estabelecer uma conexão VPN site-to-site na AWS, utilizando pfSense como solução de firewall e roteamento. O pfSense é uma plataforma de firewall de código aberto altamente configurável, que pode ser obtida em [pfSense Download](https://www.pfsense.org/download/).
+## Objetivo
+Este projeto tem como objetivo configurar um AWS VPN Endpoint utilizando o método de autenticação mútua (Mutual Authentication).
 
-## Estrutura de Rede
+## Requisitos
+- **Criação de Cadeia de Certificados**: Siga as instruções disponíveis no documento [Criar Cadeia de Certificados](Geracao_Certificados_Para_Mutual_Authentication.md) para gerar a cadeia necessária de certificados.
 
-### AWS Network Setup
+## Componentes Criados pelo Projeto
+1. **VPN AWS**: Configuração e criação de um endpoint de VPN na AWS.
+2. **Importação de Cadeia de Certificados**: Importação dos certificados necessários para a autenticação mútua.
+3. **Configuração do Endpoint da VPN AWS**: Finalização da configuração do endpoint da VPN.
 
-A rede configurada na AWS é a seguinte:
-
-- **VPC Network**: `172.31.0.0/16`
-
-### Cliente PF-Sense Network
-
-A rede configurada para o cliente PF-Sense é:
-
-- **Client Network**: `192.168.24.0/24`
-
-## Configuração Inicial
-
-### Passo 1: Configuração dos Recursos na AWS
-
-Para iniciar o projeto, primeiro crie os recursos necessários na AWS. Após a criação, baixe as configurações para o pfSense. Você pode começar com os seguintes comandos Terraform:
+## Execução com Terraform
+Para iniciar o projeto e criar os recursos na AWS, execute os seguintes comandos no terminal:
 
 ```shell
 terraform init
 terraform apply
 ```
 
-### Passo 2: Configuração da Rede Host-Only no VirtualBox
+## Configuração do Cliente VPN
+Após a aplicação do Terraform, proceda com as seguintes etapas:
 
-Configure a rede Host-Only no VirtualBox sem um servidor DHCP. A figura abaixo ilustra a configuração da rede:
+1. **Instalação do Cliente VPN**: Baixe e instale o cliente OpenVPN no seu sistema operacional a partir do site oficial: [OpenVPN Client Download](https://openvpn.net/client/).
+2. **Importação do Arquivo de Configuração**: Importe o arquivo `client-config.ovpn`, gerado após a execução do comando `terraform apply`.
 
-![rede_host_only_virtualbox.PNG](..%2Fvpn-site-to-site%2Ffiguras%2Frede_host_only_virtualbox.PNG)
+## Acesso via SSH
+Para conectar via SSH a um recurso na VPC, utilize o seguinte comando (substitua `minhaChave.pem` e o IP pelo seu arquivo de chave e endereço IP correspondentes):
 
-### Passo 3: Instalação do pfSense no VirtualBox
+```shell
+ssh -i minhaChave.pem ec2-user@172.31.10.129
+```
 
-O pfSense deve ser instalado no VirtualBox com duas interfaces de rede configuradas da seguinte forma:
-
-- **Adaptador 1**: Modo Bridge
-- **Adaptador 2**: Modo Host-Only
-
-Veja a configuração das interfaces de rede do pfSense:
-
-![config_rede_adaptador_pfsense.png](..%2Fvpn-site-to-site%2Ffiguras%2Fconfig_rede_adaptador_pfsense.png)
-
-### Passo 4: Configuração do pfSense via GUI
-
-Após a instalação do pfSense, prossiga com as configurações no menu IPSec da interface Web do PF Sense, seguindo as orientações fornecidas pela AWS.
-
-## Testes de Conexão
-
-Para validar a configuração da VPN, realize testes de conexão em ambas as direções:
-
-1. **AWS para On-Premises**
-
-![aws_to_onpremisse.png](..%2Fvpn-site-to-site%2Ffiguras%2Faws_to_onpremisse.png)![Teste de Conexão da AWS para On-Premises](figuras/aws_to_onpremisse.png)
-
-2. **On-Premises para AWS**
-
-![onPremisse_to_AWS.png](..%2Fvpn-site-to-site%2Ffiguras%2FonPremisse_to_AWS.png)
-
-
-Referencia:
-https://www.youtube.com/watch?v=sVACqxLZQG4
-https://www.youtube.com/watch?v=Y-Lz7mWzHpQ
+## Destruir recursos no final
+```shell
+terraform destroy
+```
