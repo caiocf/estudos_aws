@@ -73,6 +73,12 @@ Crie uma máquina virtual na rede Host-Only e ajuste o IP local para `192.168.24
 
 ![Teste OnPremise para AWS](figuras%2FonPremisse_to_AWS.png)
 
+
+## Destruir recursos no final
+```shell
+terraform destroy
+```
+
 ## Referências
 
 - [Tutorial em Vídeo 1](https://www.youtube.com/watch?v=-C9mwejA4oA)
