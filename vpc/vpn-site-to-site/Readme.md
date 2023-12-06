@@ -26,12 +26,17 @@ Realizar a configurações na tela Web do PF Sense no menu IPSec, conforme orien
 ![configura_tunnel_pfsense.png](figuras%2Fconfigura_tunnel_pfsense.png)
 
 Teste de conexão da AWS para o OnPremisse:
+
 ![aws_to_onpremisse.png](figuras%2Faws_to_onpremisse.png)
 
 Teste de conexão do OnPremisse para a AWS:
+
 ![onPremisse_to_AWS.png](figuras%2FonPremisse_to_AWS.png)
 
 Referencias:
+
 https://www.youtube.com/watch?v=-C9mwejA4oA
+
 https://www.youtube.com/watch?v=sVACqxLZQG4
+
 https://www.youtube.com/watch?v=Y-Lz7mWzHpQ
