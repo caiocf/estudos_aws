@@ -1,5 +1,5 @@
 module "criar_vpcA_regiao1" {
-  source = "../../vpc/vpc-subnetpublic"
+  source = "../../../vpc/vpc-subnetpublic"
   name_vpc = "VPC_A"
   region =   "us-east-1"
 
