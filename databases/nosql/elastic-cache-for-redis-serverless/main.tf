@@ -7,9 +7,8 @@ resource "aws_elasticache_subnet_group" "meu_subnet_group" {
   }
 }
 
-
 resource "aws_secretsmanager_secret" "elasticache_auth" {
-  name                    = "app-4-elasticache-auth"
+  name                    = "app-4-elasticache-auth-serverless"
   recovery_window_in_days = 0
   kms_key_id              = aws_kms_key.encryption_secret.id
   #checkov:skip=CKV2_AWS_57: Disabled Secrets Manager secrets automatic rotation
@@ -19,87 +18,46 @@ resource "aws_secretsmanager_secret_version" "auth" {
   secret_string = random_password.auth.result
 }
 
-resource "aws_elasticache_replication_group" "app4" {
-  automatic_failover_enabled = true
-  subnet_group_name          = aws_elasticache_subnet_group.meu_subnet_group.name
-  replication_group_id       = var.replication_group_id
-  description                = "ElastiCache cluster for app4"
-  node_type                  = "cache.t2.small"
-  parameter_group_name       = "default.redis7.cluster.on"
-  port                       = 6379
-  multi_az_enabled           = true
-  num_node_groups            = 2
-  replicas_per_node_group    = 1
-  at_rest_encryption_enabled = true
-  kms_key_id                 = aws_kms_key.encryption_rest.id
-  transit_encryption_enabled = true
-  auth_token                 = aws_secretsmanager_secret_version.auth.secret_string
-  security_group_ids         = [aws_security_group.elastic_cache.id]
-  log_delivery_configuration {
-    destination      = aws_cloudwatch_log_group.slow_log.name
-    destination_type = "cloudwatch-logs"
-    log_format       = "json"
-    log_type         = "slow-log"
-  }
-  log_delivery_configuration {
-    destination      = aws_cloudwatch_log_group.engine_log.name
-    destination_type = "cloudwatch-logs"
-    log_format       = "json"
-    log_type         = "engine-log"
-  }
-  lifecycle {
-    ignore_changes = [kms_key_id]
-  }
-  apply_immediately = true
+resource "aws_elasticache_user" "user_test" {
+  user_id       = "test-userid"
+  user_name     = "redis-user"
+  access_string = "on ~* +@all"
+  #access_string = "on ~app::* -@all +@read +@hash +@bitmap +@geo -setbit -bitfield -hset -hsetnx -hmset -hincrby -hincrbyfloat -hdel -bitop -geoadd -georadius -georadiusbymember"
+  #access_string = "access_string = "on ~app::* +@all -@dangerous"
+  engine        = "REDIS"
+  passwords     = [aws_secretsmanager_secret_version.auth.secret_string]
 }
 
-/*
-resource "aws_elasticache_cluster" "app4" {
-  cluster_id        = var.cluster_id
-  engine            = "redis"
-  node_type         = "cache.t3.micro"
-  port              = 6379
-  #auth_token =        aws_secretsmanager_secret_version.auth.secret_string # Substitua com seu token seguro
+resource "aws_elasticache_user_group" "group_test" {
+  depends_on = [aws_elasticache_user.user_test]
+  engine        = "REDIS"
+  user_group_id = "user-groupid"
+  user_ids      = ["default",aws_elasticache_user.user_test.user_id]
+}
 
-  parameter_group_name = "default.redis7.cluster.on" # Ajuste conforme a versão desejada
-  engine_version       = "7.2"              # Especifique a versão do Redis
+resource "aws_elasticache_serverless_cache" "app4" {
+  depends_on = [aws_elasticache_user_group.group_test]
+  engine = "redis"
+  name   = var.name_redis_serverless
+  user_group_id           = aws_elasticache_user_group.group_test.user_group_id
+
+/*  cache_usage_limits {
+    data_storage {
+      maximum = 10
+      unit    = "GB"
+    }
+    ecpu_per_second {
+      maximum = 5
+    }
+  }*/
+  daily_snapshot_time      = "09:00"
+  description              = "ElastiCache cluster for app4 serverless"
+  kms_key_id               = aws_kms_key.encryption_rest.arn
+  major_engine_version     = "7"
+  snapshot_retention_limit = 1
+  security_group_ids       = [aws_security_group.elastic_cache.id]
+  subnet_ids               = aws_elasticache_subnet_group.meu_subnet_group.subnet_ids
 
   provider = aws.primary
-  subnet_group_name = aws_elasticache_subnet_group.meu_subnet_group.name
+}
 
-  snapshot_retention_limit = 5
-  snapshot_window          = "00:00-05:00"
-
-
-*/
-/*  log_delivery_configuration {
-    destination      = aws_cloudwatch_log_group.example.name
-    destination_type = "cloudwatch-logs"
-    log_format       = "text"
-    log_type         = "slow-log"
-  }
-  log_delivery_configuration {
-    destination      = aws_kinesis_firehose_delivery_stream.example.name
-    destination_type = "kinesis-firehose"
-    log_format       = "json"
-    log_type         = "engine-log"
-  }*//*
-
-
-  log_delivery_configuration {
-    destination      = aws_cloudwatch_log_group.slow_log.name
-    destination_type = "cloudwatch-logs"
-    log_format       = "json"
-    log_type         = "slow-log"
-  }
-  log_delivery_configuration {
-    destination      = aws_cloudwatch_log_group.engine_log.name
-    destination_type = "cloudwatch-logs"
-    log_format       = "json"
-    log_type         = "engine-log"
-  }
-  lifecycle {
-    ignore_changes = [aws_kms_alias]
-  }
-  apply_immediately = true
-}*/

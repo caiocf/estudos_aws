@@ -1,10 +1,11 @@
 ### Criação dos Recursos
 
 Este projeto cria os seguintes recursos:
-- **AWS Secret**: Para armazenar o token do Redis.
+- **AWS Secret**: Para armazenar o senha do Redis.
 - **SSM Parameter Store**: Dois parâmetros para salvar a porta e o endpoint do cluster do Redis.
+- ** Criar de usuario e um grupo associação ao cluster redis.
 - **Máquina EC2**: Com `redis-cli` instalado e configurado para usar SSM.
-- **Cluster Redis Com Servidor**: Versão 7 com criptografia em trânsito e em repouso, configurado para multi-AZ, 2 node group e uma replica.
+- **Cluster Redis Sem Servidor (Serverless)**: Versão 7 com criptografia em trânsito e em repouso
 - **VPC Privada**: Criação de uma VPC privada para os recursos.
 
 #### Implantação da Infraestrutura
@@ -30,9 +31,10 @@ Após a execução, os outputs relevantes serão exibidos, como:
 ```
 Outputs:
 
-endpoint_redis = "/elasticache/app-4/app-redis-cluster/endpoint"
-port_redis = "/elasticache/app-4/app-redis-cluster/port"
-token_redis = "app-4-elasticache-auth"
+endpoint_redis = "/elasticache/app-4/app-redis-serverless/endpoint"
+port_redis = "/elasticache/app-4/app-redis-serverless/port"
+token_secret_manager_redis = "app-4-elasticache-auth-serverless"
+username_redis = "redis-user"
 ```
 
 #### Conectando ao Redis
@@ -42,7 +44,7 @@ Para conectar ao Redis, você precisa obter o token e o endpoint salvos no SSM e
 **Obtendo o Endpoint via SSM:**
 
 ```shell
-aws ssm get-parameter --name "/elasticache/app-4/app-redis-cluster/endpoint" --with-decryption
+aws ssm get-parameter --name "/elasticache/app-4/app-redis-serverless/endpoint" --with-decryption
 ```
 
 **Exemplo de Resposta:**
@@ -50,8 +52,8 @@ aws ssm get-parameter --name "/elasticache/app-4/app-redis-cluster/endpoint" --w
 ```json
 {
     "Parameter": {
-        "Name": "/elasticache/app-4/app-redis-cluster/endpoint",
-        "Value": "clustercfg.app-redis-cluster.g47czi.use1.cache.amazonaws.com"
+        "Name": "/elasticache/app-4/app-redis-serverless/endpoint",
+        "Value": "app-redis-serverless-g47czi.serverless.use1.cache.amazonaws.com"
     }
 }
 ```
@@ -59,14 +61,14 @@ aws ssm get-parameter --name "/elasticache/app-4/app-redis-cluster/endpoint" --w
 **Obtendo o Token via Secrets Manager:**
 
 ```shell
-aws secretsmanager get-secret-value --secret-id app-4-elasticache-auth
+aws secretsmanager get-secret-value --secret-id app-4-elasticache-auth-serverless
 ```
 
 **Exemplo de Resposta:**
 
 ```json
 {
-    "SecretString": "sDAVQi1kYeiH2JmQN9wm4jY8HOVjMn859lhXkAimxJTcvrnOdzrdgBiCR8D9VAnk..."
+    "SecretString": "V2kGXPPZfTcTCtA3E0LelPHrCAiOQH3v1sMCV0RWYV3y9OsbeVY6DrA6trYZZ928Lxr9gtznQ9hs6AHUCLVsoHsUeUn8Q5QlckCObCClLzkhKJPRku0BuX5MCfk4iUYd"
 }
 ```
 
@@ -74,17 +76,11 @@ aws secretsmanager get-secret-value --secret-id app-4-elasticache-auth
 
 Execute os comandos abaixo na máquina EC2 criada com `redis-cli`:
 
-1. Exportar o token do Redis:
+1. Conectar via `redis-cli` no modo cluster:
 
-    ```shell
-    export REDISCLI_AUTH="sDAVQi1kYeiH2JmQN9wm4jY8HOVjMn859lhXkAimxJTcvrnOdzrdgBiCR8D9VAnk..."
-    ```
-
-2. Conectar via `redis-cli` no modo cluster:
-
-    ```shell
-    redis-cli -c -h clustercfg.app-redis-cluster.g47czi.use1.cache.amazonaws.com -p 6379 --tls
-    ```
+ ```shell
+redis-cli -c -h app-redis-serverless-g47czi.serverless.use1.cache.amazonaws.com -p 6379 --tls --user redis-user --pass V2kGXPPZfTcTCtA3E0LelPHrCAiOQH3v1sMCV0RWYV3y9OsbeVY6DrA6trYZZ928Lxr9gtznQ9hs6AHUCLVsoHsUeUn8Q5QlckCObCClLzkhKJPRku0BuX5MCfk4iUYd
+```
 
 #### Cadastrando e Recuperando Valores
 
@@ -102,7 +98,7 @@ quit                   # Exit from redis-cli
 
 #### Destruição da Infraestrutura
 
-Para destruir a infraestrutura no ambiente de desenvolvimento, execute:
+Para destruir a infraestrutura no ambiente, execute:
 
 ```shell
 terraform destroy

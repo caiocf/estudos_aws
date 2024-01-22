@@ -9,24 +9,13 @@ variable "region" {
   }
 }
 
-variable "cluster_id" {
-  default = "meu-cluster"
-  type = string
-  description = "name of the cluster redis"
-}
-
-variable "replication_group_id" {
+variable "name_redis_serverless" {
   description = "The name of the ElastiCache replication group."
-  default     = "app-redis-cluster"
+  default     = "app-redis-serverless"
   type        = string
 }
 
 variable "namespace" {
   description = "Default namespace"
   default = ""
-}
-
-variable "node_groups" {
-  description = "Number of nodes groups to create in the cluster"
-  default     = 3
 }
