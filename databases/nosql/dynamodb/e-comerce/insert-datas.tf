@@ -62,7 +62,9 @@ resource "aws_dynamodb_table_item" "item3" {
   "Email": {"S": "user3@example.com"},
   "FullName": {"S": "User 3"},
   "address": {"S": "{\"home\": \"1021 Main St\", \"city\": \"Anytown\"}"},
-  "LastLoginDate": {"S": "2023-01-03"}
+  "LastLoginDate": {"S": "2023-01-03"},
+  "mapa_abc": {"M": {"Name": {"S": "Joe"}, "Age": {"N": "35"}}},
+  "ListAttribute": {"L": [{"S": "elemento_1"}, {"N": "123"}]}
 }
 ITEM
 }

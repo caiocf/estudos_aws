@@ -1,7 +1,3 @@
-Aqui está uma versão melhorada do seu Markdown:
-
----
-
 # Projeto de Infraestrutura AWS com WordPress
 
 ## Descrição do Projeto
