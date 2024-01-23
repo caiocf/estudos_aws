@@ -37,6 +37,7 @@ terraform apply
   ```
 
 Após a criação dos recursos, você pode se conectar ao cluster Redshift usando a AWS Query Editor ou outras ferramentas de cliente compatíveis.
+![redshift_consulta](redshift_consulta.png)
 
 ### Destruição dos Recursos
 
