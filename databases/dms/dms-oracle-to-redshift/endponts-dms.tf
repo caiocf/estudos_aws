@@ -36,14 +36,14 @@ resource "aws_dms_endpoint" "redshift_target" {
   port     = 5439 # Porta padrão do Redshift
 
   database_name = aws_redshift_cluster.default.database_name
-  service_access_role = aws_iam_role.dms-access-for-endpoint-redshift.arn
+  #service_access_role = aws_iam_role.dms-access-for-endpoint-redshift.arn
 
-    redshift_settings {
-      bucket_folder = "foo_dms"
-      bucket_name = module.s3_logs.s3_bucket_id
-      encryption_mode = "SSE_S3"
-      service_access_role_arn = aws_iam_role.dms-access-for-endpoint-redshift.arn
-    }
+  redshift_settings {
+    bucket_folder = "foo_dms"
+    bucket_name = module.s3_logs.s3_bucket_id
+    encryption_mode = "SSE_S3"
+    service_access_role_arn = aws_iam_role.dms-access-for-endpoint-redshift.arn
+  }
 
   #extra_connection_attributes = ""
 
