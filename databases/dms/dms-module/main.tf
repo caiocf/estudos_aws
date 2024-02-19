@@ -70,17 +70,13 @@ resource "aws_dms_endpoint" "target" {
       encryption_mode         = "SSE_S3"
     }
   }
-
-/*  redshift_settings {
-    service_access_role_arn = aws_iam_role.dms-access-for-endpoint.arn
-    bucket_name = aws_s3_bucket.redshift_logs.bucket
-    encryption_mode = "SSE_S3"
-  }*/
   tags = local.tags
 }
 
 resource "aws_s3_bucket" "redshift_logs" {
   bucket = "dms-redshift-bucket-upload-${random_string.bucket_suffix.result}"
+
+  force_destroy = true
 }
 
 resource "aws_s3_bucket_policy" "redshift_logs_policy" {
@@ -134,8 +130,10 @@ resource "aws_dms_replication_task" "replication-task" {
   source_endpoint_arn      = aws_dms_endpoint.source.endpoint_arn
   target_endpoint_arn      = aws_dms_endpoint.target.endpoint_arn
 
-  table_mappings               = file("${path.module}/table-mappings.json") # Arquivo de mapeamento de tabelas
-  replication_task_settings    = file("${path.module}/task-settings.json") # Arquivo de configurações da tarefa
+  table_mappings               = file("table-mappings.json") # Arquivo de mapeamento de tabelas
+  replication_task_settings    = file("task-settings.json") # Arquivo de configurações da tarefa
+  //table_mappings               = file("${path.module}/table-mappings.json") # Arquivo de mapeamento de tabelas
+  //replication_task_settings    = file("${path.module}/task-settings.json") # Arquivo de configurações da tarefa
 
   tags = local.tags
 

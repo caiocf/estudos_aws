@@ -57,17 +57,3 @@ resource "aws_iam_role_policy_attachment" "dms-vpc-role-AmazonDMSVPCManagementRo
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonDMSVPCManagementRole"
   role       = aws_iam_role.dms-vpc-role.name
 }
-
-/*resource "aws_iam_role_policy_attachment" "dms-access-for-endpoint-s3-full-access" {
-  role       = aws_iam_role.dms-access-for-endpoint.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
-}*/
-
-/*
-resource "aws_redshift_cluster_iam_roles" "example" {
-  cluster_identifier = "meu-cluster-redshift"
-  role_arns          = [aws_iam_role.dms-access-for-endpoint.arn]
-}
-*/
-
-

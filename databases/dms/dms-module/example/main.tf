@@ -2,21 +2,15 @@ resource "random_id" "id" {
   byte_length = 8
 }
 
-
-/*data "aws_secretsmanager_secret_version" "db_password"{
-  secret_id = var.arn_secret_pass
-}*/
-
-
-
 module "modulo-dms" {
+  depends_on = [module.oracle, module.criar_vpcA_regiao1, aws_redshift_cluster.default]
+
   source = "../"
   application = var.application
   dms_vpc_security_group_ids =  [aws_security_group.dms_sg.id]
   dms_vpc_subnet_ids = [module.criar_vpcA_regiao1.subnet_a_id, module.criar_vpcA_regiao1.subnet_b_id, module.criar_vpcA_regiao1.subnet_c_id]
 
   source_database_engine = "oracle"
-  //source_database_extra_connection_attributes = "useLogminerReader=N;useBfile=Y;archivedLogDestId=1;additionalArchivedLogDestId=2;"
   source_database_extra_connection_attributes = "useLogminerReader=N;useBfile=Y;archivedLogDestId=1;additionalArchivedLogDestId=2"
   source_database_host = split(":", module.oracle.db_instance_endpoint)[0]
   source_database_name = module.oracle.db_instance_name
@@ -39,6 +33,9 @@ module "modulo-dms" {
 }
 
 
+/*data "aws_secretsmanager_secret_version" "db_password"{
+  secret_id = var.arn_secret_pass
+}*/
 
 /*
 module "modulo-dms" {
