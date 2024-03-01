@@ -3,7 +3,7 @@ resource "aws_instance" "web_Vpc_A_Private" {
   instance_type = "t2.micro"
   vpc_security_group_ids = [aws_security_group.allow_ssh_vpcA_regiao1.id]
   ami = data.aws_ami.amazonLinux_regiao1.id
-  subnet_id = element(sort(data.aws_subnets.default.ids), 0)
+  subnet_id = element(sort(data.aws_subnets.default.id), 0)
 
   key_name = aws_key_pair.keyPairSSH_regiao_1.key_name
 

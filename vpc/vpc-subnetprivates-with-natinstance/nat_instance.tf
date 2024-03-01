@@ -44,9 +44,9 @@ resource "aws_key_pair" "minha_chave" {
 }
 
 
-resource "aws_instance" "gluon-nat-instance" {
+resource "aws_instance" "server-nat-instance" {
   depends_on = [aws_subnet.public_subnets]
-  ami                         = data.aws_ami.amzn-nat-linux-2023-ami.id
+  ami                         = data.aws_ami.amzn2-linux-kvm-ami.id
   instance_type               = "t2.micro"
   subnet_id                   = aws_subnet.public_subnets[0].id
   vpc_security_group_ids      = [aws_security_group.gluon-sg-nat-instance.id]
@@ -54,6 +54,18 @@ resource "aws_instance" "gluon-nat-instance" {
   source_dest_check           = false
 
   key_name = aws_key_pair.minha_chave.key_name
+
+  user_data = <<-EOF
+              #!/bin/bash
+              yum install iptables-services -y
+              systemctl enable iptables
+              systemctl start iptables
+              echo 1 > /proc/sys/net/ipv4/ip_forward
+              echo 0 > /proc/sys/net/ipv4/conf/eth0/send_redirects
+              iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+              iptables -F FORWARD
+              iptables-save > /etc/sysconfig/iptables
+              EOF
 
   # Root disk for NAT instance
   root_block_device {

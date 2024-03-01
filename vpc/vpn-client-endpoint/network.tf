@@ -4,4 +4,9 @@ module "criar_vpcA_regiao1" {
 
 
   cidr_vpc = "172.31.0.0/16"
+
+  providers = {
+    aws = aws.primary
+  }
 }
+

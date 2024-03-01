@@ -1,7 +1,3 @@
-provider "aws" {
-  region = var.region
-}
-
 resource "random_string" "ssh_key_name" {
   length  = 8  # ou qualquer comprimento que você desejar
   special = false # definir como true se caracteres especiais forem necessários
@@ -34,12 +30,12 @@ resource "aws_subnet" "private_subnets" {
 }
 
 resource "aws_route" "to-instance" {
-  depends_on = [aws_instance.gluon-nat-instance]
+  depends_on = [aws_instance.server-nat-instance]
   count = 3
   route_table_id         = aws_route_table.private-rtb[count.index].id
   destination_cidr_block = "0.0.0.0/0"  # Rota padrão
 
-  network_interface_id =  aws_instance.gluon-nat-instance.primary_network_interface_id
+  network_interface_id =  aws_instance.server-nat-instance.primary_network_interface_id
 }
 
 resource "aws_route_table" "private-rtb" {
