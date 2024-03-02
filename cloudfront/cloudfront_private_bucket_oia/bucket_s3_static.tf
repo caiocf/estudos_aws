@@ -3,7 +3,6 @@ resource "aws_s3_bucket" "web_site" {
   bucket = "${var.name_prefix_bucket}-${random_string.bucket_suffix.result}"
   provider = aws.primary
   force_destroy = true
-
 }
 
 resource "aws_s3_bucket_policy" "bucket_policy" {
