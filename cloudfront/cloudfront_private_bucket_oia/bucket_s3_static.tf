@@ -1,11 +1,9 @@
 
 resource "aws_s3_bucket" "web_site" {
-  bucket = "meu-website-${random_string.bucket_suffix.result}"
+  bucket = "${var.name_prefix_bucket}-${random_string.bucket_suffix.result}"
   provider = aws.primary
   force_destroy = true
-
 }
-
 
 resource "aws_s3_bucket_policy" "bucket_policy" {
   bucket = aws_s3_bucket.web_site.id
@@ -16,34 +14,14 @@ resource "aws_s3_bucket_policy" "bucket_policy" {
       {
         Action    = "s3:GetObject"
         Effect    = "Allow"
-        Resource  = ["${aws_s3_bucket.web_site.arn}/*",aws_s3_bucket.web_site.arn]
-        //Principal = {"AWS": "arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${aws_cloudfront_origin_access_identity.oai.id}"}
-        Principal = {"AWS": aws_cloudfront_origin_access_identity.oai.iam_arn}
+        Resource  = "${aws_s3_bucket.web_site.arn}/*"
+        Principal = {
+          AWS = "arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${aws_cloudfront_origin_access_identity.oai.id}"
+        }
       },
     ]
   })
 }
-
-/*resource "aws_s3_bucket_website_configuration" "example" {
-  bucket = aws_s3_bucket.web_site.id
-
-  index_document {
-    suffix = "index.html"
-  }
-
-  error_document {
-    key = "error.html"
-  }
-  routing_rule {
-    condition {
-      key_prefix_equals = "docs/"
-    }
-    redirect {
-      replace_key_prefix_with = "documents/"
-    }
-  }
-}
-*/
 
 resource "aws_s3_bucket_versioning" "versioning_example" {
   bucket = aws_s3_bucket.web_site.id
@@ -65,6 +43,7 @@ resource "aws_s3_object" "index_docs" {
   content_type = "text/html"
   source = "arquivos_bucket/index.html"
 }
+
 resource "aws_s3_object" "index_error" {
   bucket = aws_s3_bucket.web_site.id
   key    = "error.html"

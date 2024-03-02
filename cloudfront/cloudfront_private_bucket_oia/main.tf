@@ -1,14 +1,6 @@
 locals {
-  s3_origin_id = "myS3Origin"
+  s3_origin_id = "${var.name_prefix_bucket}-${random_string.bucket_suffix.result}"
 }
-
-/*resource "aws_cloudfront_origin_access_control" "oai" {
-  name                              = "example"
-  description                       = "Example Policy"
-  origin_access_control_origin_type = "s3"
-  signing_behavior                  = "always"
-  signing_protocol                  = "sigv4"
-}*/
 
 resource "aws_cloudfront_origin_access_identity" "oai" {
   comment = "OAI para acesso ao S3 bucket pelo CloudFront"
@@ -20,16 +12,13 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     #origin_access_control_id = aws_cloudfront_origin_access_control.oai.id
     origin_id                = local.s3_origin_id
     s3_origin_config {
-      #origin_access_identity = "origin-access-identity/cloudfront/${aws_cloudfront_origin_access_identity.oai.id}"
       origin_access_identity = aws_cloudfront_origin_access_identity.oai.cloudfront_access_identity_path
     }
   }
 
-
-
   enabled             = true
   is_ipv6_enabled     = true
-  comment             = "Some comment"
+  comment             = "Website from CloudFront Team Sellers"
   default_root_object = "index.html"
 
 /*
@@ -41,25 +30,6 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
 */
 
   #aliases = ["mysite.example.com", "yoursite.example.com"]
-
-/*  default_cache_behavior {
-    allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
-    cached_methods   = ["GET", "HEAD"]
-    target_origin_id = local.s3_origin_id
-
-    forwarded_values {
-      query_string = false
-
-      cookies {
-        forward = "none"
-      }
-    }
-
-    viewer_protocol_policy = "allow-all"
-    min_ttl                = 0
-    default_ttl            = 3600
-    max_ttl                = 86400
-  }*/
 
   default_cache_behavior {
     allowed_methods  = ["GET", "HEAD", "OPTIONS"]
@@ -80,32 +50,9 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     max_ttl                = 86400
   }
 
-  # Cache behavior with precedence 0
-  /*ordered_cache_behavior {
-    path_pattern     = "/content/immutable*//*"
-    allowed_methods  = ["GET", "HEAD", "OPTIONS"]
-    cached_methods   = ["GET", "HEAD", "OPTIONS"]
-    target_origin_id = local.s3_origin_id
-
-    forwarded_values {
-      query_string = false
-      headers      = ["Origin"]
-
-      cookies {
-        forward = "none"
-      }
-    }
-
-    min_ttl                = 0
-    default_ttl            = 86400
-    max_ttl                = 31536000
-    compress               = false
-    viewer_protocol_policy = "redirect-to-https"
-  }
-
   # Cache behavior with precedence 1
   ordered_cache_behavior {
-    path_pattern     = "/docs*//*"
+    path_pattern     = "/documents/*"
     allowed_methods  = ["GET", "HEAD", "OPTIONS"]
     cached_methods   = ["GET", "HEAD"]
     target_origin_id = local.s3_origin_id
@@ -118,14 +65,13 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
       }
     }
 
-    min_ttl                = 0
-    default_ttl            = 3600
+    min_ttl                = 30
+    default_ttl            = 5600
     max_ttl                = 86400
     compress               = true
     viewer_protocol_policy = "redirect-to-https"
   }
-  */
-  #price_class = "PriceClass_200"
+  price_class = "PriceClass_200"
 
   restrictions {
     geo_restriction {
@@ -142,3 +88,17 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     cloudfront_default_certificate = true
   }
 }
+
+resource "null_resource" "invalidate_cloudfront_cache" {
+  depends_on = [aws_cloudfront_distribution.s3_distribution]
+
+  provisioner "local-exec" {
+    command = "aws cloudfront create-invalidation --distribution-id ${aws_cloudfront_distribution.s3_distribution.id} --paths /*"
+  }
+
+  triggers = {
+    always_run = "${timestamp()}"
+  }
+}
+
+
