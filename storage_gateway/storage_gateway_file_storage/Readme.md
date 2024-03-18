@@ -47,12 +47,11 @@ mount -o nolock -o mtype=hard <Endereço_IP_Gateway>:/cloud_dados_storage_share 
 
    ![montagem_diretorio_nfs.png](assets/montagem_diretorio_nfs.png)
 
+
 ## Sincronismo entre S3 e NFS
 Arquivos adicionados ao compartilhamento NFS são sincronizados quase imediatamente com o bucket S3. Contudo, arquivos carregados diretamente no S3 podem levar até 5 minutos para serem visíveis no compartilhamento NFS devido ao cache do Storage Gateway.
 
 ![s3_nf2_sicronimos_arquivos_explorer.png](assets/s3_nf2_sicronimos_arquivos_explorer.png)
-
-Claro, vou revisar o texto para melhorar a clareza e a formatação do Markdown:
 
 ## Destruindo o Ambiente
 
