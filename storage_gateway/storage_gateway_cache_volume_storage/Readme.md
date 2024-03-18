@@ -51,7 +51,8 @@ Siga os passos até o final após clicar em novo volume simples.
 
 
 Após a conclusão da configuração, diversas ações podem ser realizadas para aproveitar ao máximo o seu ambiente de armazenamento integrado. Primeiramente, a unidade mapeada está pronta para ser utilizada como um meio eficaz de armazenamento local, onde você pode salvar arquivos, documentos e outros dados importantes com facilidade e segurança. Esta funcionalidade é especialmente útil para a gestão diária de dados e para garantir que os arquivos críticos estejam acessíveis localmente.
-
+![arquivos_mapeamento.png](assets/arquivos_mapeamento.png)
+![arquivos_mapeamento_1.png](assets/arquivos_mapeamento_1.png)
 Além disso, a AWS oferece opções robustas de backup e recuperação para seus volumes iSCSI. Uma das funcionalidades mais poderosas é a capacidade de criar snapshots dos seus volumes diretamente na console da AWS. Esses snapshots capturam o estado completo do volume em um ponto específico no tempo, fornecendo uma maneira conveniente de realizar backups incrementais e de recuperar seus dados em caso de necessidade.
 
 Após a criação de um snapshot, você tem a flexibilidade de utilizá-lo de diversas maneiras. Por exemplo, é possível anexar o snapshot a uma instância EC2, permitindo que você monte o volume em uma máquina virtual na nuvem. Esta opção é particularmente útil para testes de recuperação de desastres, migração de dados ou até mesmo para a clonagem de ambientes para desenvolvimento e teste.

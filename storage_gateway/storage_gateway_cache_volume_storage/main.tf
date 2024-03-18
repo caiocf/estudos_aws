@@ -50,13 +50,13 @@ resource "aws_storagegateway_cached_iscsi_volume" "this_iscsi_volume" {
   gateway_arn          = aws_storagegateway_gateway.storage-gateway.arn
   network_interface_id = var.gateway_ip_address
   target_name          = "target"
-  volume_size_in_bytes = 10 * 1024 * 1024 * 1024 # 150 GB
-
-   # Configuração CHAP
-  chap_enabled         = false
-/*  chap_in_initiator_secret = "yourinitisecret"  # Senha para o iniciador se conectar
-  chap_in_target_secret   = "yourtargetsecret"      # Senha para o alvo se autenticar ao iniciador
-  chap_in_initiator_name  = "yourinitiatorname"     # Nome do iniciador CHAP*/
+  volume_size_in_bytes = 150 * 1024 * 1024 * 1024 # 150 GB
+  /*
+     # Configuração CHAP
+    chap_enabled         = false
+    chap_in_initiator_secret = "yourinitisecret"  # Senha para o iniciador se conectar
+    chap_in_target_secret   = "yourtargetsecret"      # Senha para o alvo se autenticar ao iniciador
+    chap_in_initiator_name  = "yourinitiatorname"     # Nome do iniciador CHAP*/
 
   provider = aws.primary
 }
