@@ -1,6 +1,6 @@
 
 module "ec2_nlb" {
-  source = "../../ec2/ec2_nlb"
+  source = "../../ec2/ec2-nlb"
   providers = {aws = aws.primary}
 }
 
