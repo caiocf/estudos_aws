@@ -4,7 +4,7 @@ module "ec2_nlb" {
   providers = {aws = aws.primary}
 }
 
-resource "aws_api_gateway_vpc_link" "example_vpc_link" {
+resource "aws_api_gateway_vpc_link" "vpc_link" {
   depends_on = [module.ec2_nlb]
 
   name        = "vpc-link-api"
@@ -29,7 +29,7 @@ resource "aws_api_gateway_stage" "stage" {
   xray_tracing_enabled = true
 }
 
-resource "aws_api_gateway_method_settings" "example" {
+resource "aws_api_gateway_method_settings" "method_settings" {
   rest_api_id = aws_api_gateway_rest_api.petstore_api.id
   stage_name  = aws_api_gateway_stage.stage.stage_name
   method_path = "*/*"
