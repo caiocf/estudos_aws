@@ -31,45 +31,6 @@ tags:
   - name: user
     description: Operations about user
 paths:
-  /pets:
-    get:
-      x-amazon-apigateway-integration:
-        uri: "${lambda_get_pets_arn}"
-        responses: {}
-        httpMethod: "POST"
-        type: "aws_proxy"
-      summary: List all pets
-      operationId: listPets
-      responses:
-        '200':
-          description: An array of pets
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Pet'
-    post:
-      x-amazon-apigateway-integration:
-        uri: "${lambda_create_pet_arn}"
-        responses: {}
-        httpMethod: "POST"
-        type: "aws_proxy"
-      operationId: createPet
-      summary: Create a new pet
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Pet'
-      responses:
-        '201':
-          description: Pet created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Pet'
   /pets/{petId}:
     get:
       parameters:
@@ -79,10 +40,14 @@ paths:
           schema:
             type: string
       x-amazon-apigateway-integration:
-        uri: "${lambda_get_pet_arn}"
-        responses: {}
-        httpMethod: "POST"
-        type: "aws_proxy"
+        uri: '${URL_NLB_ENDPOINT}/{petId}'
+        httpMethod: 'GET'
+        type: 'http_proxy'
+        connectionType: 'VPC_LINK'
+        connectionId: '${VPC_LINK_ID}'
+        passthroughBehavior: "when_no_match"
+        requestParameters:
+          integration.request.path.petId: "method.request.path.petId"
       summary: Get a pet by ID
       operationId: getPetById
       responses:
@@ -92,19 +57,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Pet'
-    delete:
-      parameters:
-        - $ref: '#/components/parameters/petId'
-      x-amazon-apigateway-integration:
-        uri: "${lambda_delete_pet_arn}"
-        responses: {}
-        httpMethod: "POST"
-        type: "aws_proxy"
-      summary: Delete a pet by ID
-      operationId: deletePetById
-      responses:
-        '204':
-          description: Pet deleted.
 components:
   schemas:
     Pet:
@@ -145,3 +97,5 @@ components:
       description: Unique identifier of the Pet
       schema:
         type: string
+
+
