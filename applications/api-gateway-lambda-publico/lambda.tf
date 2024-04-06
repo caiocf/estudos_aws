@@ -22,26 +22,6 @@ data "archive_file" "lambda_delete_pet_zip" {
   output_path = "${path.module}/backend/lambda_delete_pet.zip"
 }
 
-
-resource "aws_iam_role" "lambda_role" {
-  name = "lambda_pet_role"
-
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [
-      {
-        Action = "sts:AssumeRole",
-        Principal = {
-          Service = "lambda.amazonaws.com",
-        },
-        Effect = "Allow",
-        Sid = "",
-      },
-    ],
-  })
-}
-
-
 resource "aws_lambda_function" "lambda_get_pets" {
   filename         = data.archive_file.lambda_get_pets_zip.output_path
   function_name    = "listPetsLambda"

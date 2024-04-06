@@ -12,6 +12,8 @@ resource "aws_api_gateway_stage" "stage" {
   rest_api_id   = aws_api_gateway_rest_api.petstore_api.id
   stage_name    = var.ambiente_stage
 
+  provider = aws.primary
+
   xray_tracing_enabled = true
 }
 
@@ -19,6 +21,8 @@ resource "aws_api_gateway_method_settings" "example" {
   rest_api_id = aws_api_gateway_rest_api.petstore_api.id
   stage_name  = aws_api_gateway_stage.stage.stage_name
   method_path = "*/*"
+
+  provider = aws.primary
 
   settings {
     metrics_enabled = true
@@ -40,54 +44,6 @@ resource "aws_api_gateway_deployment" "petstore_deployment" {
   }
 
   provider = aws.primary
-}
-
-resource "aws_iam_role" "api_gateway_lambda_role" {
-  name = "api_gateway_lambda_role"
-
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [{
-      Action = "sts:AssumeRole"
-      Principal = {
-        Service = "apigateway.amazonaws.com"
-      }
-      Effect = "Allow"
-      Sid = ""
-    }]
-  })
-
-}
-
-
-resource "aws_iam_role_policy" "invoke_lambda" {
-  name = "invoke_lambda"
-  role = aws_iam_role.api_gateway_lambda_role.id
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [{
-      Action = "lambda:InvokeFunction"
-      Effect = "Allow"
-      Resource = aws_lambda_function.lambda_get_pets.arn
-    },
-    {
-      Action = "lambda:InvokeFunction"
-      Effect = "Allow"
-      Resource = aws_lambda_function.lambda_get_pet.arn
-    },
-    {
-      Action = "lambda:InvokeFunction"
-      Effect = "Allow"
-      Resource = aws_lambda_function.lambda_create_pet.arn
-    },
-    {
-      Action = "lambda:InvokeFunction"
-      Effect = "Allow"
-      Resource = aws_lambda_function.lambda_delete_pet.arn
-    }
-    ]
-  })
 }
 
 
