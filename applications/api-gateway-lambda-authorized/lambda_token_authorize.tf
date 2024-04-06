@@ -6,7 +6,7 @@ data "archive_file" "token_authorizer_lambda_zip" {
 
 resource "aws_lambda_function" "token_authorizer_lambda" {
   filename         = data.archive_file.token_authorizer_lambda_zip.output_path
-  function_name    = "token-authorizer-lambda"
+  function_name    = var.name_token_authorizer_lambda
   role             = aws_iam_role.lambda_role.arn
   handler          = "token_authorizer_lambda.lambda_handler"
   source_code_hash = data.archive_file.token_authorizer_lambda_zip.output_base64sha256

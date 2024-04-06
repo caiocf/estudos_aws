@@ -14,6 +14,10 @@ variable "ambiente_stage" {
   default = "dev"
 }
 
+variable "name_token_authorizer_lambda" {
+  description = "Name Lambda authorizer"
+  default = "token-authorizer-lambda"
+}
 
 variable "access_log_format" {
   description = "The format of the access log file."
