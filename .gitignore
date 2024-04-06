@@ -134,4 +134,6 @@ terraform.rc
 /vpc/vpn-client-endpoint/easy-rsa/
 /vpc/vpn-client-endpoint/client-config.ovpn
 /vpc/vpn-client-endpoint/easy-rsa/
-/applications/api-gateway-lambda-publico/api_gateway.zip
+/applications/api-gateway-lambda-publico/*.zip
+/applications/api-gateway-lambda-publico/backend/*.zip
+/applications/*/*/*.zip
