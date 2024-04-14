@@ -1,0 +1,54 @@
+openapi: 3.0.1
+info:
+  description: |-
+    API for retrieving a simple text string.
+  version: 1.0
+  title: Text Retrieval API - OpenAPI 3.0
+  termsOfService: 'http://swagger.io/terms/'
+  contact:
+    email: apiteam@swagger.io
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+tags:
+  - name: text
+    description: Everything about your text
+    externalDocs:
+      description: Find out more
+      url: 'http://swagger.io'
+  - name: user
+    description: Operations about user
+paths:
+  /site-gera-texto:
+    get:
+      x-amazon-apigateway-integration:
+        uri: "${site-lambda-function_arn}"
+        responses: {}
+        httpMethod: "POST"
+        type: "aws_proxy"
+      summary: List all pets
+      operationId: get-texts
+      responses:
+        '200':
+          description: An randon of text
+          content:
+            application/json:
+              schema:
+                type: string
+            text/html:
+              schema:
+                type: string
+              example: "Hello, world!"
+        '400':
+          description: Bad request
+        '500':
+          description: Internal server error
+components:
+  parameters:
+    petId:
+      name: petId
+      in: path
+      required: true
+      description: Unique identifier of the Pet
+      schema:
+        type: string

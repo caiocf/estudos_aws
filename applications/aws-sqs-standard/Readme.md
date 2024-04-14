@@ -69,3 +69,11 @@ aws sqs delete-message --queue-url https://sqs.us-east-1.amazonaws.com/975049978
 ```
 
 Substitua `RECEIPT_HANDLE` pelo identificador recebido ao receber a mensagem.
+
+
+## Limpeza dos Recursos
+
+Quando os recursos não forem mais necessários, utilize o comando abaixo para evitar custos desnecessários:
+
+```bash
+terraform destroy

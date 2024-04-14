@@ -1,0 +1,21 @@
+<html>
+<script>
+
+    function myFunction() {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                document.getElementById("my-demo").innerHTML = this.responseText;
+            }
+        };
+        xhttp.open("GET", "${URL_API_GATEWAY}/site-gera-texto", true);
+        xhttp.send();
+
+    }
+
+</script>
+<body><div align="center"><br><br><br><br>
+    <h1><span id="my-demo"></span></h1>
+    <button onclick="myFunction()">CLIQUE AQUI</button><br>
+</body>
+</html>
