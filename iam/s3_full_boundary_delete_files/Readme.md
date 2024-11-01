@@ -10,8 +10,8 @@ Este projeto Terraform cria uma **IAM Role** na AWS com permissões de acesso to
 
 ## Estrutura do Projeto
 
-```plaintext
-.
+.```plaintext
+
 ├── main.tf            # Arquivo principal para a configuração da role e do boundary
 ├── variables.tf       # Definição das variáveis, como o ID da conta de confiança
 └── provider.tf        # Configuração do provider AWS
