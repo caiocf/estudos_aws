@@ -8,9 +8,13 @@ data "aws_route53_zone" "internal_vpc_b" {
 resource "aws_route53_record" "ptfe_service_vpc_b" {
   zone_id = data.aws_route53_zone.internal_vpc_b.zone_id
   name    = "ptfe.${data.aws_route53_zone.internal_vpc_b.name}"
-  type    = "CNAME"
-  ttl     = "300"
-  records = [aws_vpc_endpoint.vpc_endpoint_nlb_vpcB.dns_entry[0]["dns_name"]]
+  type    = "A"
+
+  alias {
+    name                   = aws_vpc_endpoint.vpc_endpoint_nlb_vpcB.dns_entry[0]["dns_name"]
+    zone_id                = aws_vpc_endpoint.vpc_endpoint_nlb_vpcB.dns_entry[0]["hosted_zone_id"]
+    evaluate_target_health = false
+  }
 
   provider = aws.primary
 }

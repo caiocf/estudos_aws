@@ -25,6 +25,7 @@ resource "aws_lb_target_group" "target_group" {
   vpc_id   = data.aws_vpc.default.id # Substitua pelo ID do VPC desejado
 
   provider = aws.primary
+  target_type = "instance"
 
   health_check {
     port                = 8080
