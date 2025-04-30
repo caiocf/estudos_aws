@@ -5,7 +5,7 @@ Este projeto utiliza o Terraform para criar um API Gateway na AWS, com base na e
 ## Recursos Criados
 
 - **Lambda Pets Functions:** São criadas funções Lambda para cada operação disponibilizada pela API, começando pela listagem de pets.
-- **Lambda Authorizer Function:** Implementa uma função Lambda que atua como um autorizador, validando tokens de autenticação. Se o token recebido for "abc123", a requisição é autorizada; caso contrário, é negada.
+- **Lambda Authorizer Function em Java com Snapstart:** Implementa uma função Lambda que atua como um autorizador, validando tokens de autenticação. Se o token recebido for "abc123", a requisição é autorizada; caso contrário, é negada.
 - **IAM Roles e Policies:** Define IAM roles e policies que concedem ao API Gateway permissão para invocar as funções Lambda.
 - **CloudWatch Log Group:** Cria um grupo de log no AWS CloudWatch para registrar os logs gerados pelo API Gateway e pelas funções Lambda. Uma IAM role é associada para permitir que o API Gateway registre esses logs.
 - **API Gateway:** Configura o API Gateway, cria os stages necessários e importa a especificação OpenAPI. O template da especificação é processado para substituir placeholders pelos ARNs das funções Lambda, configurando assim as integrações da API de forma adequada.
