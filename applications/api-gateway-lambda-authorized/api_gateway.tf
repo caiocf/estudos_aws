@@ -29,6 +29,11 @@ resource "aws_api_gateway_method_settings" "example" {
     logging_level   = "INFO"
     data_trace_enabled = true
   }
+
+
+  depends_on = [
+    aws_api_gateway_account.gateway_account
+  ]
 }
 
 
