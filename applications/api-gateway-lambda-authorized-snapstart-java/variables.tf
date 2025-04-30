@@ -19,6 +19,11 @@ variable "name_token_authorizer_lambda" {
   default = "token-authorizer-lambda"
 }
 
+variable "alias_name_lambda_authorizer" {
+  description = "Nome do alias do lambda authorizer"
+  default = "prod"
+}
+
 variable "access_log_format" {
   description = "The format of the access log file."
   type        = string

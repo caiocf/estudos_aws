@@ -23,7 +23,7 @@ resource "aws_lambda_function" "token_authorizer_lambda" {
 }
 
 resource "aws_lambda_alias" "snapstart_alias" {
-  name             = "snapstart_v1"
+  name             = var.alias_name_lambda_authorizer
   function_name    = aws_lambda_function.token_authorizer_lambda.function_name
   function_version = aws_lambda_function.token_authorizer_lambda.version
   description      = "Alias apontando para versão com SnapStart"
@@ -37,8 +37,8 @@ resource "aws_iam_role_policy_attachment" "lambda_xray" {
 resource "aws_lambda_permission" "api_gateway_token_authorizer_lambda_invoke" {
   statement_id  = "AllowExecutionFromAPIGateway"
   action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.token_authorizer_lambda.function_name
-  #function_name = aws_lambda_alias.snapstart_alias.arn  # Corrigido para usar o alias
+  qualifier = aws_lambda_alias.snapstart_alias.name
+  function_name = aws_lambda_alias.snapstart_alias.function_name
   principal     = "apigateway.amazonaws.com"
   // The following source_arn should be adjusted to match your API Gateway ARN structure
   source_arn    = "${aws_api_gateway_rest_api.petstore_api.execution_arn}/*/*"
