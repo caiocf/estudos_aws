@@ -12,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayCustomAuthorizerEvent;
 import com.amazonaws.services.lambda.runtime.events.IamPolicyResponse;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,10 +29,13 @@ class AwsLambdaAuthorizerTest {
     void testTokenAutorizado() {
         // Arrange
         APIGatewayCustomAuthorizerEvent event = new APIGatewayCustomAuthorizerEvent();
-        event.setAuthorizationToken("valid-token");
+        //event.setAuthorizationToken("Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMiwiaXNzIjoiaHR0cHM6Ly9tZXUtYXV0b3JpemFkb3ItdG9rZW4tZ3JlZW4uY29tIn0.tU8pPcfYcRZ8FtQ7rG2ZL6sMefoYyD1ZMp4QtXqwq-4");
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Authorization","Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMiwiaXNzIjoiaHR0cHM6Ly9tZXUtYXV0b3JpemFkb3ItdG9rZW4tZ3JlZW4uY29tIn0.tU8pPcfYcRZ8FtQ7rG2ZL6sMefoYyD1ZMp4QtXqwq-4");
+        event.setHeaders(headers);
         event.setMethodArn("arn:aws:execute-api:region:account:api/stage/GET/resource");
 
-        when(myService.verificaToken("valid-token")).thenReturn(true);
+        when(myService.verificaToken(anyString())).thenReturn(true);
 
         // Act
         IamPolicyResponse response = awsLambdaAuthorizer.handleRequest(event, null);
@@ -46,13 +50,18 @@ class AwsLambdaAuthorizerTest {
         Map<String, Object> statement = statements.get(0);
 
         assertEquals("Allow", statement.get("Effect"));
+        assertNotNull(response.getContext().get("authorization"));
+        assertNotNull(response.getContext().get("x-authorization"));
     }
 
     @Test
     void testTokenNegado() {
         // Arrange
         APIGatewayCustomAuthorizerEvent event = new APIGatewayCustomAuthorizerEvent();
-        event.setAuthorizationToken("invalid-token");
+        //event.setAuthorizationToken("invalid-token");
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Authorization","invalid-token");
+        event.setHeaders(headers);
         event.setMethodArn("arn:aws:execute-api:region:account:api/stage/GET/resource");
 
         when(myService.verificaToken("invalid-token")).thenReturn(false);

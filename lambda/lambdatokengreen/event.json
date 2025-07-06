@@ -1,12 +1,12 @@
 {
   "type": "TOKEN",
-  "authorizationToken": "allow",
+  "authorizationToken": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMiwiaXNzIjoiaHR0cHM6Ly9tZXUtYXV0b3JpemFkb3ItdG9rZW4tZ3JlZW4uY29tIn0.tU8pPcfYcRZ8FtQ7rG2ZL6sMefoYyD1ZMp4QtXqwq-4",
   "methodArn": "arn:aws:execute-api:us-east-1:123456789012:abcdef123/test/GET/my-resource",
   "resource": "/my-resource",
   "path": "/my-resource",
   "httpMethod": "GET",
   "headers": {
-    "Authorization": "allow",
+    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMiwiaXNzIjoiaHR0cHM6Ly9tZXUtYXV0b3JpemFkb3ItdG9rZW4tZ3JlZW4uY29tIn0.tU8pPcfYcRZ8FtQ7rG2ZL6sMefoYyD1ZMp4QtXqwq-4",
     "User-Agent": "PostmanRuntime/7.32.3"
   },
   "requestContext": {
