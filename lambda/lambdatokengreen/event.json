@@ -1,0 +1,23 @@
+{
+  "type": "TOKEN",
+  "authorizationToken": "allow",
+  "methodArn": "arn:aws:execute-api:us-east-1:123456789012:abcdef123/test/GET/my-resource",
+  "resource": "/my-resource",
+  "path": "/my-resource",
+  "httpMethod": "GET",
+  "headers": {
+    "Authorization": "allow",
+    "User-Agent": "PostmanRuntime/7.32.3"
+  },
+  "requestContext": {
+    "accountId": "123456789012",
+    "resourceId": "abcdef123",
+    "stage": "test",
+    "requestId": "c5c4c4f3-a4f1-11e6-82b8-2f5e4c3f3f3e",
+    "identity": {
+      "sourceIp": "192.168.0.1",
+      "userAgent": "PostmanRuntime/7.32.3"
+    },
+    "apiId": "abcdef123"
+  }
+}

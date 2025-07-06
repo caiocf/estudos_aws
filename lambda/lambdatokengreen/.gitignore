@@ -1,0 +1,35 @@
+# Diretórios padrão do Maven
+/target/
+/.idea/
+/.vscode/
+*.iml
+
+# Quarkus
+.quarkus/
+
+# Build native (GraalVM)
+*.native
+*.native-image
+*.cache
+
+# Arquivos temporários do sistema
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Arquivos do sistema operacional
+ehthumbs.db
+Icon?
+Desktop.ini
+
+# Arquivos da AWS SAM
+.aws-sam/
+.sam-*
+
+# Arquivos ZIP gerados para deploy
+function.zip
+
+# Arquivos de teste
+*.test.json
