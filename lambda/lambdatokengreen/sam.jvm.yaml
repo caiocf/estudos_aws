@@ -8,6 +8,29 @@ Globals:
       - "*/*"
 
 Resources:
+  #LambdaExecutionRole:
+  #  Type: AWS::IAM::Role
+  #  Properties:
+  #    RoleName: lambda-quarkus-role
+  #    AssumeRolePolicyDocument:
+  #      Version: '2012-10-17'
+  #      Statement:
+  #        - Effect: Allow
+  #          Principal:
+  #            Service: lambda.amazonaws.com
+  #          Action: sts:AssumeRole
+  #    Policies:
+  #      - PolicyName: InlineLoggingPolicy
+  #        PolicyDocument:
+  #          Version: '2012-10-17'
+  #          Statement:
+  #            - Effect: Allow
+  #              Action:
+  #                - logs:CreateLogGroup
+  #                - logs:CreateLogStream
+  #                - logs:PutLogEvents
+  #              Resource: arn:aws:logs:*:*:*
+
   Lambdatokengreen:
     Type: AWS::Serverless::Function
     Properties:
@@ -19,3 +42,4 @@ Resources:
       Policies: AWSLambdaBasicExecutionRole
       SnapStart:
         ApplyOn: PublishedVersions
+      #Role: !GetAtt LambdaExecutionRole.Arn
