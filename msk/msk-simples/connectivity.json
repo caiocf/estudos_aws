@@ -1,0 +1,5 @@
+{
+  "PublicAccess": {
+    "Type": "SERVICE_PROVIDED_EIPS"
+  }
+}
