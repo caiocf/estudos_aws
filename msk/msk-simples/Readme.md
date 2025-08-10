@@ -1,16 +1,16 @@
 # MSK Simples – Terraform
 
-Provisiona um ambiente **Amazon MSK (Apache Kafka 3.6.0)** “simples”, com:
+Este projeto provisiona um cluster **Amazon MSK (provisionado)** mínimo em VPC privada (2 AZs), com **TLS em trânsito** e **autenticação IAM (SASL/IAM)**.
 
-* **VPC + subnets públicas**, IGW e rota
-* **MSK provisionado** (2 brokers), criptografia em trânsito (TLS) e em repouso (KMS)
-* **Autenticação**: **SASL/SCRAM** (Secrets Manager + associação) **e** **SASL/IAM**
-* **Open Monitoring (Prometheus)** e **CloudWatch Logs**
-* **Autoescalabilidade de armazenamento** (Application Auto Scaling – alvo de utilização de disco)
-* **Configuration (Rev.3)** com parâmetros de broker (server.properties)
+**Recursos criados:**
 
-> ⚠️ Por padrão o cluster nasce com **acesso público desativado**. Para testar do seu computador, habilite **temporariamente** o público (instruções abaixo) ou rode os clientes numa **EC2** na mesma VPC.
+* VPC + subnets privadas (2 AZs) + roteamento básico
+* Security Group restrito por CIDR configurável
+* MSK Cluster (Kafka) com logs no CloudWatch
+* **Outputs** com endpoints `bootstrap_brokers_sasl_iam` e `bootstrap_brokers_tls`
+* Exemplo de `client.properties` para **producer/consumer** com SASL/IAM
 
+> ⚠️ **Custo**: MSK provisionado mantém brokers ativos. Use apenas em ambientes de estudo e **destrua** ao finalizar.
 ---
 
 ## Estrutura
@@ -41,27 +41,6 @@ Provisiona um ambiente **Amazon MSK (Apache Kafka 3.6.0)** “simples”, com:
 
 ---
 
-## Variáveis principais (resumo)
-
-Defina em `terraform.tfvars` (exemplo), caso deseje e passei via parametro o arquivo para o comando terraform:
-
-```hcl
-region        = "us-east-1"
-project_name  = "outbox-cdc-msk"
-
-# MSK
-kafka_version        = "3.6.0"
-broker_instance_type = "kafka.m5.large"
-public_access_type   = "DISABLED" # criação exige DISABLED; depois você pode atualizar p/ SERVICE_PROVIDED_EIPS
-
-# SCRAM
-msk_scram_username = "appclient"  # o Secret será AmazonMSK_appclient (KMS CMK custom)
-```
-
-> Dica: As variaveis tem os valores padrões acima já.
-
----
-
 ## Como usar
 
 ```bash
@@ -70,7 +49,16 @@ terraform plan
 terraform apply
 ```
 
-**Outputs** úteis:
+### Saídas importantes
+
+```bash
+terraform output
+```
+
+* **bootstrap\_brokers\_sasl\_iam** → uso com autenticação IAM
+* **bootstrap\_brokers\_tls** → uso com TLS sem IAM
+
+---
 
 * `cluster_arn`
 * `zookeeper_connect_string` (apenas informativo)
@@ -173,6 +161,8 @@ aws kafka update-connectivity \
 
 4. **Depois do teste**, volte para `DISABLED` (faça o mesmo comando com `"Type":"DISABLED"`).
 
+> Se o cluster estiver com **público habilitado**, volte para `DISABLED` antes de destruir (ou o update pode travar por policy/SG).
+
 ---
 
 ## Teste rápido com Kafka Client
@@ -250,8 +240,7 @@ bin/kafka-console-consumer.sh --bootstrap-server "$BOOTSTRAP" \
 terraform destroy
 ```
 
-> Se o cluster estiver com **público habilitado**, volte para `DISABLED` antes de destruir (ou o update pode travar por policy/SG).
-
+> Sempre destrua recursos para evitar custos desnecessários.
 ---
 
 ## Troubleshooting
