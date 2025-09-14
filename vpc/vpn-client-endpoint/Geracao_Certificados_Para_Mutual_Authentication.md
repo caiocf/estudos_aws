@@ -1,5 +1,7 @@
 Gerar Certificados Para Mutual authentication:
 
+Siga os passo, conforme a doc oficial:
+https://docs.aws.amazon.com/pt_br/vpn/latest/clientvpn-admin/client-auth-mutual-enable.html
 
 Fazer a listagem de comando usando o Git Bash (Caso esteja usando o Windows):
 
@@ -21,7 +23,7 @@ Fazer a listagem de comando usando o Git Bash (Caso esteja usando o Windows):
 
 4. **Gere o certificado e a chave do servidor.**
    ```shell
-   ./easyrsa build-server-full server nopass
+   ./easyrsa --san=DNS:server build-server-full server nopass
    ```
 
 5. **Gere o certificado e a chave do cliente.**
@@ -31,3 +33,7 @@ Fazer a listagem de comando usando o Git Bash (Caso esteja usando o Windows):
    ```
 
 aws acm import-certificate --certificate fileb://easy-rsa/easyrsa3/pki/issued/server01.crt --private-key fileb://easy-rsa/easyrsa3/pki/private/server.key --certificate-chain fileb://easy-rsa/easyrsa3/pki/ca.crt
+
+Referencia:
+
+https://www.youtube.com/watch?v=JVja4o-3kIk

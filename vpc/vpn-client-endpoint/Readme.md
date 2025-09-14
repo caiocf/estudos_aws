@@ -17,6 +17,9 @@ Para iniciar o projeto e criar os recursos na AWS, execute os seguintes comandos
 ```shell
 terraform init
 terraform apply
+
+aws --region us-east-1 ec2 export-client-vpn-client-configuration --client-vpn-endpoint-id cvpn-endpoint-04eb81d43a3de82d8 --output text > client-config.ovpn && sh update_vpn_config.sh client-config.ovpn
+
 ```
 
 ## Configuração do Cliente VPN
@@ -36,3 +39,5 @@ ssh -i minhaChave.pem ec2-user@172.31.10.129
 ```shell
 terraform destroy
 ```
+
+
