@@ -259,6 +259,16 @@ slot.drop.on.stop=false
 
 # Outbox Event Router
 transforms=outbox
+
+# Aplica primeiro o filtro, depois o Outbox Event Router
+# transforms=filter,outbox
+
+# ----- Filtro -----
+#transforms.filter.type=org.apache.kafka.connect.transforms.Filter
+# Mantém só mensagens cujo campo 'tenant_id' == 'tenant-01'
+#transforms.filter.condition=$[?($.tenant_id == 'tenant-01')]
+#transforms.filter.action=keep
+
 transforms.outbox.type=io.debezium.transforms.outbox.EventRouter
 transforms.outbox.table.field.event.id=id
 transforms.outbox.table.field.event.key=aggregate_id
