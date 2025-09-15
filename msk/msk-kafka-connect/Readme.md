@@ -30,6 +30,60 @@ Projeto didático **IaC com Terraform** que implementa o *Outbox Pattern* usando
 
 ---
 
+
+### Diagramas comparativos
+
+**Outbox Pattern (usado neste projeto)**
+
+```mermaid
+graph LR
+  A[Application]
+  B[(Business tables)]
+  O[(public.outbox)]
+  subgraph Postgres
+    B
+    O
+  end
+  D[Debezium Outbox]
+  K[Kafka topics]
+  K2[outbox.event.<aggregate_type>]
+  C[Consumers]
+
+  A --> B
+  A -- same_tx --> O
+  O --> D
+  D --> K
+  K --> K2
+  K2 --> C
+```
+
+**CDC (Change Data Capture) genérico**
+
+```mermaid
+graph LR
+  A[Application]
+  B[(Business tables)]
+  subgraph Postgres
+    B
+    WAL[(WAL log)]
+  end
+  DC[Debezium CDC]
+  T[Kafka topics]
+  T2[per table / transformed]
+  C[Consumers]
+
+  A --> B
+  B --> WAL
+  WAL --> DC
+  DC --> T
+  T --> T2
+  T2 --> C
+```
+
+> No **Outbox**, a aplicação controla o **contrato do evento** e evita *dual‑write* (DB+Kafka) ao gravar o evento **na mesma transação**. No **CDC**, você captura mudanças das **tabelas reais**, o que normalmente requer transformar/normalizar os registros de CRUD em **eventos de domínio**.
+
+---
+
 ## Componentes provisionados
 
 * **Aurora PostgreSQL 16** (1 Writer, 1 Reader)
