@@ -262,14 +262,13 @@ terraform destroy
 * Debezium Outbox Event Router — documentação oficial
 * AWS: MSK Connect + Debezium PostgreSQL — guia de exemplo
 * Aurora PostgreSQL — replicação lógica / parameter groups
-
-https://www.youtube.com/watch?v=G87fm-tjhmY
-https://github.com/JayaprakashKV/streaming-pipeline-aws
-https://repost.aws/questions/QUHDBV6n40SeyevDIiopfdoA/mks-service-with-debezium
-https://aws.amazon.com/pt/blogs/aws/introducing-amazon-msk-connect-stream-data-to-and-from-your-apache-kafka-clusters-using-managed-connectors/
-https://docs.aws.amazon.com/pt_br/msk/latest/developerguide/msk-connect-debeziumsource-connector-example-steps.html
-https://debezium.io/documentation/reference/stable/transformations/outbox-event-router.html
-https://www.youtube.com/watch?v=QJFqfbVcD6s
-https://repost.aws/questions/QUHDBV6n40SeyevDIiopfdoA/mks-service-with-debezium
-https://medium.com/data-hackers/integra%C3%A7%C3%A3o-de-dados-em-tempo-real-do-postgres-para-o-s3-com-debezium-65b0ac97bdb2
+* https://www.youtube.com/watch?v=G87fm-tjhmY
+* https://github.com/JayaprakashKV/streaming-pipeline-aws
+* https://repost.aws/questions/QUHDBV6n40SeyevDIiopfdoA/mks-service-with-debezium
+* https://aws.amazon.com/pt/blogs/aws/introducing-amazon-msk-connect-stream-data-to-and-from-your-apache-kafka-clusters-using-managed-connectors/
+* https://docs.aws.amazon.com/pt_br/msk/latest/developerguide/msk-connect-debeziumsource-connector-example-steps.html
+* https://debezium.io/documentation/reference/stable/transformations/outbox-event-router.html
+* https://www.youtube.com/watch?v=QJFqfbVcD6s
+* https://repost.aws/questions/QUHDBV6n40SeyevDIiopfdoA/mks-service-with-debezium
+* https://medium.com/data-hackers/integra%C3%A7%C3%A3o-de-dados-em-tempo-real-do-postgres-para-o-s3-com-debezium-65b0ac97bdb2
 ---
