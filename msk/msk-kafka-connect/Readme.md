@@ -256,6 +256,10 @@ publication.name=debezium_pub
 publication.autocreate.mode=filtered
 slot.drop.on.stop=false
 
+# FILTRO DIRETO NO POSTGRES
+# Apenas linhas da tabela outbox cujo status seja 'pendente'
+# table.filter.query=SELECT * FROM public.outbox WHERE tenant_id = 'tenant-01'
+
 
 # Outbox Event Router
 transforms=outbox
