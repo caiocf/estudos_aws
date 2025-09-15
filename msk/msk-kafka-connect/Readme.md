@@ -57,7 +57,12 @@ Neste projeto, o Debezium é usado com o **Outbox Event Router (SMT)**: em vez d
 
 **Outbox** é um padrão de integração orientado a eventos no qual a própria aplicação grava, **na mesma transação** do comando de negócio, um registro em uma tabela dedicada (ex.: `public.outbox`) descrevendo o evento de domínio (payload + metadados). Um conector/worker (aqui, Debezium + Event Router) lê **apenas essa tabela de outbox** e publica o evento no broker (Kafka), preservando a atomicidade e evitando o problema de *dual‑write* (escrever no banco e no broker separadamente). Vantagens: contrato de evento **explícito e versionável**, menor acoplamento com o esquema interno das tabelas de origem, controle do *routing* e de metadados (headers), além de semântica mais previsível para *exactly‑once* ao nível da aplicação. Exige, por outro lado, **mudança de código** (gravar na outbox) e um desenho intencional do formato do evento.
 
+
 **CDC (Change Data Capture)** é uma técnica mais genérica que lê o **log de transações** do banco (ex.: WAL no PostgreSQL) para capturar INSERT/UPDATE/DELETE diretamente das tabelas de dados. Tem como ponto forte a **baixa intrusão** (pouca ou nenhuma mudança no código da aplicação) e pode cobrir muitos objetos/tabelas de uma vez. Porém, tende a **expor o esquema físico** do banco, dificulta a construção de **eventos de domínio bem modelados** (é preciso transformar CRUD → eventos), e pode introduzir acoplamento indesejado entre consumidores e a estrutura interna das tabelas. Por esses motivos, **este projeto usa Outbox**, priorizando a atomicidade transacional e um **contrato de evento claro e estável** para integração entre serviços.
+
+
+* **Outbox**: só `INSERT` na outbox; “operação” e “antes/depois” ficam **no evento que você escrever** (ex.: `type`, `payload.old/new`).
+* **CDC tradicional**: Debezium fornece `op` + `before/after` automaticamente para as **tabelas de negócio** (configure `ALTER TABLE PUBLIC.MY_ORDERS REPLICA IDENTITY FULL` para `before` completo).
 
 ---
 
