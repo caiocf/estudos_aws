@@ -1,0 +1,179 @@
+#!/bin/bash
+set -euo pipefail
+exec > >(tee -a /var/log/user-data.log) 2>&1
+
+echo "[user-data] Iniciando setup do Kafka..."
+
+# -------- Java --------
+if command -v dnf >/dev/null 2>&1; then
+  dnf update -y
+  dnf install -y java-17-amazon-corretto wget tar
+else
+  yum update -y
+  amazon-linux-extras install -y java-openjdk17 || yum install -y java-17-amazon-corretto
+  yum install -y wget tar
+fi
+
+# -------- Variáveis do Kafka (TF injeta estas) --------
+KAFKA_VERSION="${kafka_version}"
+SCALA_VERSION="${scala_version}"
+BOOTSTRAP="${bootstrap_iam}"
+
+# -------- Diretórios (variáveis de shell: use $${...}) --------
+KAFKA_BASE="/opt"
+KAFKA_DIR="$${KAFKA_BASE}/kafka_$${SCALA_VERSION}-$${KAFKA_VERSION}"
+KAFKA_LINK="$${KAFKA_BASE}/kafka-current"
+
+mkdir -p "$${KAFKA_BASE}"
+cd /tmp
+echo "[user-data] Baixando Kafka ${kafka_version}..."
+wget -q "https://archive.apache.org/dist/kafka/${kafka_version}/kafka_${scala_version}-${kafka_version}.tgz"
+tar -xzf "kafka_${scala_version}-${kafka_version}.tgz" -C "$${KAFKA_BASE}"
+ln -sfn "$${KAFKA_DIR}" "$${KAFKA_LINK}"
+
+# PATH do Kafka
+echo 'export KAFKA_HOME=/opt/kafka-current' > /etc/profile.d/kafka.sh
+echo 'export PATH=$PATH:$KAFKA_HOME/bin' >> /etc/profile.d/kafka.sh
+echo "export BOOTSTRAP=$${BOOTSTRAP}" >> /etc/profile.d/kafka.sh
+chmod 644 /etc/profile.d/kafka.sh
+
+# -------- MSK IAM Auth JAR --------
+echo "[user-data] Baixando MSK IAM Auth JAR..."
+mkdir -p "$${KAFKA_LINK}/libs"
+cd "$${KAFKA_LINK}/libs"
+wget -q "https://repo1.maven.org/maven2/software/amazon/msk/aws-msk-iam-auth/2.3.2/aws-msk-iam-auth-2.3.2-all.jar"
+
+# -------- client-iam.properties (TF injeta o conteúdo aqui) --------
+echo "[user-data] Gravando client-iam.properties..."
+cat > "$${KAFKA_LINK}/config/client-iam.properties" <<'EOS'
+security.protocol=SASL_SSL
+sasl.mechanism=AWS_MSK_IAM
+sasl.jaas.config=software.amazon.msk.auth.iam.IAMLoginModule required;
+sasl.client.callback.handler.class=software.amazon.msk.auth.iam.IAMClientCallbackHandler
+EOS
+
+chmod 644 "$${KAFKA_LINK}/config/client-iam.properties"
+echo "BOOTSTRAP Endpoint: $${BOOTSTRAP}"
+# -------- Script de exemplo (cuidado com  --------
+cat > /home/ec2-user/msk-client-examples.sh <<'EOS'
+#!/bin/bash
+set -euo pipefail
+# source /etc/profile
+#BOOTSTRAP="$${1:-$${BOOTSTRAP}}"
+#TOPIC="$${1:-teste}"
+
+TOPIC="$${1:-teste}"
+
+# Lista tópicos
+kafka-topics.sh \
+  --bootstrap-server "$BOOTSTRAP" \
+  --command-config "$KAFKA_HOME/config/client-iam.properties" \
+  --list
+
+# kafka-topics.sh --bootstrap-server "$BOOTSTRAP" \
+#  --command-config  "$KAFKA_HOME/config/client-iam.properties"  \
+#  --create --topic demo.topic --partitions 3 --replication-factor 2
+
+# kafka-topics.sh --bootstrap-server "$BOOTSTRAP" \
+#  --command-config  "$KAFKA_HOME/config/client-iam.properties"  \
+#  --create --topic demo.topic --partitions 3 --replication-factor 2
+
+# Producer (interativo):
+# kafka-console-producer.sh \
+#   --bootstrap-server "$BOOTSTRAP" \
+#   --producer.config "$KAFKA_HOME/config/client-iam.properties" \
+#   --topic "$TOPIC"
+
+# Consumer:
+# kafka-console-consumer.sh \
+#   --bootstrap-server "$BOOTSTRAP" \
+#   --consumer.config "$KAFKA_HOME/config/client-iam.properties" \
+#   --topic "$TOPIC" --from-beginning
+EOS
+
+chown ec2-user:ec2-user /home/ec2-user/msk-client-examples.sh
+chmod +x /home/ec2-user/msk-client-examples.sh
+
+
+
+# ------------------------------------------------------------------
+#  AURORA POSTGRESQL CLIENT (psql)
+# ------------------------------------------------------------------
+echo "[user-data] Instalando cliente PostgreSQL (psql)..."
+if command -v dnf >/dev/null 2>&1; then
+  # Amazon Linux 2023
+  dnf install -y postgresql15 || dnf install -y postgresql || true
+else
+  # Amazon Linux 2
+  amazon-linux-extras enable postgresql14 || true
+  yum clean metadata || true
+  yum install -y postgresql14 || yum install -y postgresql || true
+fi
+
+# Export conveniente
+echo 'export PSQL_BIN=$(command -v psql || echo /usr/bin/psql)' > /etc/profile.d/db-clis.sh
+echo 'export PATH=$PATH:$(dirname "$PSQL_BIN")' >> /etc/profile.d/db-clis.sh
+chmod 644 /etc/profile.d/db-clis.sh
+
+
+# ------------------------------------------------------------------
+#  AMAZON DOCUMENTDB CLIENT (mongosh / mongo)
+# ------------------------------------------------------------------
+echo "[user-data] Instalando cliente DocumentDB (mongosh/mongo)..."
+
+install_mongosh_tar() {
+  local VER="2.2.9"  # ajuste se preferir
+  local TGZ="mongosh-$VER-linux-x64.tgz"
+  echo "[user-data] Tentando mongosh via tarball ($VER)..."
+  curl -fsSL "https://downloads.mongodb.com/compass/$TGZ" -o "/tmp/$TGZ" || return 1
+  tar -xzf "/tmp/$TGZ" -C /tmp
+  install -m 0755 "/tmp/mongosh-$VER-linux-x64/bin/mongosh" /usr/local/bin/mongosh
+  ln -sf /usr/local/bin/mongosh /usr/bin/mongosh || true
+  mongosh --version || true
+}
+
+if command -v dnf >/dev/null 2>&1; then
+  # AL2023: MongoDB não mantém repo oficial; preferimos tarball
+  install_mongosh_tar || echo "[user-data] Aviso: falha ao instalar mongosh via tarball."
+else
+  # AL2: tentar repo do MongoDB (mongo shell e/ou mongosh)
+  # Primeiro tentamos mongosh (pode não existir no repo 5.0)
+  cat >/etc/yum.repos.d/mongodb-org-7.0.repo <<'EOF'
+[mongodb-org-7.0]
+name=MongoDB Repository
+baseurl=https://repo.mongodb.org/yum/amazon/2/mongodb-org/7.0/x86_64/
+gpgcheck=1
+enabled=1
+gpgkey=https://www.mongodb.org/static/pgp/server-7.0.asc
+EOF
+  yum install -y mongodb-mongosh || true
+
+  # Se mongosh não veio, tentar o shell legado (mongo) do 5.0, compatível com DocumentDB 5.0
+  if ! command -v mongosh >/dev/null 2>&1; then
+    cat >/etc/yum.repos.d/mongodb-org-5.0.repo <<'EOF'
+[mongodb-org-5.0]
+name=MongoDB Repository
+baseurl=https://repo.mongodb.org/yum/amazon/2/mongodb-org/5.0/x86_64/
+gpgcheck=1
+enabled=1
+gpgkey=https://www.mongodb.org/static/pgp/server-5.0.asc
+EOF
+    yum install -y mongodb-org-shell || true
+  fi
+
+  # Se ainda assim não houver cliente, fallback tarball
+  if ! command -v mongosh >/dev/null 2>&1 && ! command -v mongo >/dev/null 2>&1; then
+    install_mongosh_tar || echo "[user-data] Aviso: não foi possível instalar mongosh/mongo."
+  fi
+fi
+
+# Pequenos sanity checks
+echo "[user-data] Versões instaladas (se disponíveis):"
+psql --version || true
+mongosh --version || mongo --version || true
+
+
+# Permissões gerais
+chown -R ec2-user:ec2-user "$${KAFKA_DIR}"
+
+echo "[user-data] Concluído."
