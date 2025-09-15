@@ -6,9 +6,40 @@ Projeto didático **IaC com Terraform** que implementa o *Outbox Pattern* usando
 
 ---
 
+## Por que usar Outbox? Problemas que ele resolve
+
+- **Dual‑write e inconsistência**: sem Outbox, a aplicação precisa **gravar no banco** e **publicar no broker** em dois passos distintos. Se um deles falhar (ex.: DB commit ok, mas publish em Kafka falha), você cria **estado divergente**. Com Outbox, o evento é gravado **na mesma transação** do comando de negócio; a publicação para o Kafka é feita de forma assíncrona e confiável pelo conector.
+- **Ordem e idempotência por agregado**: usando `aggregate_id` como **chave de partição** e um **`event.id`** único, consumidores conseguem **preservar ordem** por entidade e implementar **deduplicação** (idempotência) com facilidade.
+- **Menos acoplamento ao esquema interno**: CDC puro costuma expor o **CRUD** e o **esquema físico** (colunas/tabelas) da base. O Outbox publica um **evento de domínio** (contrato estável), blindando consumidores de mudanças internas nas tabelas operacionais.
+- **Recuperação e reprocessamento simples**: eventos ficam **persistidos** na tabela `public.outbox` até serem lidos pelo conector; se ele cair, **retoma** do ponto certo (replication slot). Você pode **replay** com segurança quando necessário.
+- **Backpressure e resiliência**: a aplicação **não bloqueia** esperando o broker; escreve localmente e delega a entrega ao pipeline. Isso reduz impacto de picos/indisponibilidade do Kafka.
+- **Auditoria e rastreabilidade**: payload + metadados (ex.: `trace_id`, `tenant_id`) ficam **armazenados** e também seguem como **headers** no tópico, facilitando troubleshooting e observabilidade de ponta a ponta.
+- **Evolução independente**: você pode **migrar/otimizar** o modelo relacional interno sem quebrar os assinantes, desde que **preserve o contrato** do evento da outbox.
+- **Fan‑out para múltiplos destinos**: um mesmo evento pode ser roteado para **tópicos diferentes** (por tipo/agregado), atendendo múltiplos serviços sem mudar o fluxo de negócio.
+
+> **Quando considerar CDC (em vez de Outbox)?** Para casos de **replicação de dados** para *data lake/warehouse* ou integrações onde não há necessidade de modelar **eventos de domínio**: CDC genérico pode ser suficiente e menos intrusivo.
+
+---
+
+
+## O que é Debezium (e por que neste projeto)
+
+**Debezium** é uma plataforma *open‑source* de **Change Data Capture (CDC)** construída sobre o **Kafka Connect**. Ela fornece conectores para bancos como PostgreSQL, MySQL, SQL Server etc. No PostgreSQL, o conector usa **logical decoding** (plugin `pgoutput`) com **publication** e **replication slot** para ler mudanças de forma confiável. No **MSK Connect** (gerenciado pela AWS), o Debezium roda como um *connector* gerenciado — sem você precisar operar o cluster de Connect.
+
+Neste projeto, o Debezium é usado com o **Outbox Event Router (SMT)**: em vez de capturar CRUD das tabelas de negócio, ele lê **somente** a tabela `public.outbox` e transforma cada linha em **evento de domínio**, roteando para tópicos (ex.: `outbox.event.<aggregate_type>`) e propagando metadados (headers como `trace_id`, `tenant_id`). Assim, você preserva a **atomicidade** (evento gravado na mesma transação do comando) e entrega um **contrato de evento estável** para os consumidores.
+
+**O que o Debezium resolve aqui**
+- **Streaming confiável** de eventos a partir do banco, com **retomada após falhas** (offsets/posição de leitura) e sem código custom de *polling*.
+- **Transformação e roteamento** dos registros da outbox em **eventos de domínio** (SMT Outbox), evitando expor o esquema físico das tabelas.
+- **Ordem por entidade** (quando você particiona por `aggregate_id`) e suporte a **idempotência** do lado consumidor (usando `event.id`).
+- Integração nativa com **Kafka/MSK** e **Secrets Manager** (via config provider), reduzindo atrito operacional.
+
+---
+
 ## Arquitetura (visão geral)
 
 ![solucao.png](solucao.png)
+
 
 
 **Pontos-chave**
@@ -173,7 +204,7 @@ graph LR
    kafka-console-consumer.sh \
      --bootstrap-server "$BOOTSTRAP" \
      --consumer.config "$KAFKA_HOME/config/client-iam.properties" \
-     --topic outbox.event.orders --from-beginning
+     --topic outbox.event.maria_vendas --from-beginning
    ```
     ![start_consumer_topic_ec2.png](start_consumer_topic_ec2.png)
 5. **Gerar um evento** (insert na outbox):
@@ -311,18 +342,22 @@ terraform destroy
 
 ---
 
-## Referências úteis
+### Referências oficiais
 
-* Debezium Outbox Event Router — documentação oficial
-* AWS: MSK Connect + Debezium PostgreSQL — guia de exemplo
-* Aurora PostgreSQL — replicação lógica / parameter groups
-* https://www.youtube.com/watch?v=G87fm-tjhmY
-* https://github.com/JayaprakashKV/streaming-pipeline-aws
-* https://repost.aws/questions/QUHDBV6n40SeyevDIiopfdoA/mks-service-with-debezium
-* https://aws.amazon.com/pt/blogs/aws/introducing-amazon-msk-connect-stream-data-to-and-from-your-apache-kafka-clusters-using-managed-connectors/
-* https://docs.aws.amazon.com/pt_br/msk/latest/developerguide/msk-connect-debeziumsource-connector-example-steps.html
-* https://debezium.io/documentation/reference/stable/transformations/outbox-event-router.html
-* https://www.youtube.com/watch?v=QJFqfbVcD6s
-* https://repost.aws/questions/QUHDBV6n40SeyevDIiopfdoA/mks-service-with-debezium
-* https://medium.com/data-hackers/integra%C3%A7%C3%A3o-de-dados-em-tempo-real-do-postgres-para-o-s3-com-debezium-65b0ac97bdb2
+* Debezium — Conector PostgreSQL: [https://debezium.io/documentation/reference/stable/connectors/postgresql.html](https://debezium.io/documentation/reference/stable/connectors/postgresql.html)
+* Debezium — Outbox Event Router (SMT): [https://debezium.io/documentation/reference/stable/transformations/outbox-event-router.html](https://debezium.io/documentation/reference/stable/transformations/outbox-event-router.html)
+* Debezium — Documentação principal: [https://debezium.io/documentation/](https://debezium.io/documentation/)
+* AWS Docs — MSK Connect + Debezium (exemplo): [https://docs.aws.amazon.com/pt\_br/msk/latest/developerguide/msk-connect-debeziumsource-connector-example-steps.html](https://docs.aws.amazon.com/pt_br/msk/latest/developerguide/msk-connect-debeziumsource-connector-example-steps.html)
+* AWS Blog — Introducing Amazon MSK Connect: [https://aws.amazon.com/pt/blogs/aws/introducing-amazon-msk-connect-stream-data-to-and-from-your-apache-kafka-clusters-using-managed-connectors/](https://aws.amazon.com/pt/blogs/aws/introducing-amazon-msk-connect-stream-data-to-and-from-your-apache-kafka-clusters-using-managed-connectors/)
+* PostgreSQL — Logical decoding & replication slots: [https://www.postgresql.org/docs/current/logicaldecoding-explanation.html](https://www.postgresql.org/docs/current/logicaldecoding-explanation.html)
+
+### Materiais complementares
+
+* YouTube: [https://www.youtube.com/watch?v=G87fm-tjhmY](https://www.youtube.com/watch?v=G87fm-tjhmY)
+* YouTube: [https://www.youtube.com/watch?v=QJFqfbVcD6s](https://www.youtube.com/watch?v=QJFqfbVcD6s)
+* GitHub — Exemplo de pipeline: [https://github.com/JayaprakashKV/streaming-pipeline-aws](https://github.com/JayaprakashKV/streaming-pipeline-aws)
+* Q\&A (repost.aws) — MSK + Debezium: [https://repost.aws/questions/QUHDBV6n40SeyevDIiopfdoA/mks-service-with-debezium](https://repost.aws/questions/QUHDBV6n40SeyevDIiopfdoA/mks-service-with-debezium)
+* Medium (Data Hackers) — Debezium do Postgres para S3: [https://medium.com/data-hackers/integra%C3%A7%C3%A3o-de-dados-em-tempo-real-do-postgres-para-o-s3-com-debezium-65b0ac97bdb2](https://medium.com/data-hackers/integra%C3%A7%C3%A3o-de-dados-em-tempo-real-do-postgres-para-o-s3-com-debezium-65b0ac97bdb2)
+
+
 ---
