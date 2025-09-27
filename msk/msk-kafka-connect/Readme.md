@@ -17,6 +17,9 @@ Projeto didático **IaC com Terraform** que implementa o *Outbox Pattern* usando
 - **Evolução independente**: você pode **migrar/otimizar** o modelo relacional interno sem quebrar os assinantes, desde que **preserve o contrato** do evento da outbox.
 - **Fan‑out para múltiplos destinos**: um mesmo evento pode ser roteado para **tópicos diferentes** (por tipo/agregado), atendendo múltiplos serviços sem mudar o fluxo de negócio.
 
+
+> **Limitacoes e trade-offs**: manter a tabela `public.outbox` saudavel exige rotinas de limpeza ou arquivamento; a publicacao e assincrona, entao existe uma latencia ate o evento chegar ao topico; e payloads grandes gravados na mesma transacao podem aumentar tempo de commit ou uso de storage. Avalie esses pontos antes de levar o padrao para producao.
+
 > **Quando considerar CDC (em vez de Outbox)?** Para casos de **replicação de dados** para *data lake/warehouse* ou integrações onde não há necessidade de modelar **eventos de domínio**: CDC genérico pode ser suficiente e menos intrusivo.
 
 ---
@@ -25,6 +28,16 @@ Projeto didático **IaC com Terraform** que implementa o *Outbox Pattern* usando
 ## O que é Debezium (e por que neste projeto)
 
 **Debezium** é uma plataforma *open‑source* de **Change Data Capture (CDC)** construída sobre o **Kafka Connect**. Ela fornece conectores para bancos como PostgreSQL, MySQL, SQL Server etc. No PostgreSQL, o conector usa **logical decoding** (plugin `pgoutput`) com **publication** e **replication slot** para ler mudanças de forma confiável. No **MSK Connect** (gerenciado pela AWS), o Debezium roda como um *connector* gerenciado — sem você precisar operar o cluster de Connect.
+
+**Fluxo resumido**
+- O PostgreSQL grava comandos de negocio e eventos na tabela `public.outbox`.
+- O Debezium consome o WAL via replication slot, aplica o Outbox Event Router e publica no Kafka/MSK.
+- Consumidores autenticados leem os topicos `outbox.event.*`, preservando ordenacao por `aggregate_id`.
+
+**Pre-requisitos tecnicos**
+- Usuario do Aurora com privilegios para criar publication/slot e acessar `public.outbox`.
+- Parametro `rds.logical_replication = 1` (ja definido via Terraform).
+- Rede liberada para que os workers do MSK Connect alcancem a porta 5432 do Aurora.
 
 Neste projeto, o Debezium é usado com o **Outbox Event Router (SMT)**: em vez de capturar CRUD das tabelas de negócio, ele lê **somente** a tabela `public.outbox` e transforma cada linha em **evento de domínio**, roteando para tópicos (ex.: `outbox.event.<aggregate_type>`) e propagando metadados (headers como `trace_id`, `tenant_id`). Assim, você preserva a **atomicidade** (evento gravado na mesma transação do comando) e entrega um **contrato de evento estável** para os consumidores.
 
@@ -39,6 +52,8 @@ Neste projeto, o Debezium é usado com o **Outbox Event Router (SMT)**: em vez d
 ## Arquitetura (visão geral)
 
 ![solucao.png](solucao.png)
+
+O fluxo ponta a ponta funciona assim: a aplicacao grava na `public.outbox`; o Debezium le o WAL pelo slot `debezium_slot`, transforma com o Event Router e publica no MSK como `outbox.event.<aggregate_type>`; consumidores (IAM ou SCRAM) tratam as mensagens preservando ordenacao por agregado.
 
 
 
