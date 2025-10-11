@@ -1,0 +1,6 @@
+aws_region     = "us-east-1"
+project_name   = "bia"
+environment    = "dev"
+db_username    = "postgres"
+db_password    = "postgres123"
+container_port = 8080
