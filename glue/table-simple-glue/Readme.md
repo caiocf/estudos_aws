@@ -1,5 +1,9 @@
 # Estudos AWS: Glue Data Catalog com Partition Projection
 
+Este projeto demonstra a implementação de uma camada de **SOR (System of Record)** utilizando **Terraform** para provisionar um S3 Bucket, uma base de dados no Glue e uma tabela particionada otimizada com **Partition Projection**.
+
+O diferencial desta arquitetura é a virtualização das partições, permitindo que novos dados carregados no S3 fiquem disponíveis instantaneamente para consulta no Athena, sem a necessidade de executar um Glue Crawler ou comandos manuais de reparo.
+
 Este repositório provisiona, via **Terraform**, uma estrutura simples para laboratório/estudo com:
 
 - **S3** (armazenamento dos arquivos Parquet)
