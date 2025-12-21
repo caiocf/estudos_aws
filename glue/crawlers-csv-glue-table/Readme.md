@@ -76,3 +76,12 @@ Execução Crawler:
 Resultado Consulta Athena:
 ![result_consulta_athena.png](result_consulta_athena.png)
 
+---
+
+## 🗑️ Limpeza de recursos
+
+Para destruir tudo ao final do laboratório:
+
+```bash
+terraform destroy
+```
