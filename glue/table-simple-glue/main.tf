@@ -51,7 +51,116 @@ resource "aws_glue_catalog_table" "tb1_gov" {
     output_format = "org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat"
 
     ser_de_info {
-      name                  = "tb1"
+      name                  = var.sor_table_name
+      serialization_library = "org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe"
+
+      parameters = {
+        "serialization.format" = 1
+      }
+    }
+
+    columns {
+      name = "codigo_identificacao_cliente"
+      type = "string"
+    }
+
+    columns {
+      name    = "codigo_identificacao_token"
+      type    = "string"
+    }
+
+    columns {
+      name    = "descricao_situacao_disposition"
+      type    = "string"
+    }
+
+    columns {
+      name    = "numero_versao_sistema_operacional"
+      type    = "string"
+    }
+
+    columns {
+      name    = "nome_modelo_dispositivo_mobile"
+      type    = "string"
+    }
+
+    columns {
+      name    = "codigo_identificador_dispositivo_movel"
+      type    = "string"
+    }
+
+    columns {
+      name    = "numero_serie_dispositivo_seguranca"
+      type    = "string"
+    }
+  }
+
+  depends_on = [aws_glue_catalog_database.sor]
+}
+
+
+resource "aws_glue_catalog_table" "tb2_gov" {
+  name          = var.sor_table_name_2
+  database_name = var.sor_db_name_source
+  catalog_id    = local.control_account_id
+  table_type    = "EXTERNAL_TABLE"
+
+  /*parameters = {
+    classification = "parquet"
+  }*/
+
+  parameters = {
+    classification              = "parquet"
+    "projection.enabled"        = "true"
+
+    "projection.ano.type"   = "integer"
+    "projection.ano.range"  = "2020,9999"
+
+    "projection.mes.type"   = "integer"
+    "projection.mes.range"  = "1,12"
+    "projection.mes.digits" =  "2"
+
+    "projection.dia.type"   = "integer"
+    "projection.dia.range"  = "1,31"
+    "projection.dia.digits" = "2"
+
+    "storage.location.template" = "s3://${local.sor_s3bucket}/${var.sor_table_name_2}/ano=$${ano}/mes=$${mes}/dia=$${dia}"
+
+
+    # Define que a partição 'anomesdia' é do tipo data
+    #"projection.anomesdia.type"   = "date"
+    # Define o formato que você está usando nas pastas do S3
+    #"projection.anomesdia.format" = "yyyyMMdd"
+    # Define o intervalo de datas que o Athena deve considerar
+    #"projection.anomesdia.range"  = "20230101,NOW"
+    # Define o intervalo de tempo (1 dia)
+    #"projection.anomesdia.interval"      = "1"
+    #"projection.anomesdia.interval.unit" = "DAYS"
+    # Indica ao Glue como montar o caminho no S3
+    #"storage.location.template" = "${local.sor_s3bucket}/controles-cliente-gestao-dispositivo-efetuada/anomesdia=$${anomesdia}"
+    #"storage.location.template" = "s3://${local.sor_s3bucket}/${var.sor_table_name}/anomesdia=$${anomesdia}"
+  }
+
+  partition_keys {
+    name = "ano"
+    type = "int"
+  }
+  partition_keys {
+    name = "mes"
+    type = "int"
+  }
+  partition_keys {
+    name = "dia"
+    type = "int"
+  }
+
+  storage_descriptor {
+    location      = "s3://${local.sor_s3bucket}/${var.sor_table_name_2}/"
+    input_format  = "org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat"
+    output_format = "org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat"
+
+    ser_de_info {
+      name                  = var.sor_table_name_2
       serialization_library = "org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe"
 
       parameters = {

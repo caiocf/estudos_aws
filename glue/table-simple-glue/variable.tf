@@ -32,3 +32,9 @@ variable "sor_table_name" {
   description = "Name of sor table"
   default = "dispositivo_autorizado"
 }
+
+variable "sor_table_name_2" {
+  type        = string
+  description = "Name of sor table"
+  default = "dispositivo_autorizado_2"
+}

@@ -104,9 +104,21 @@ SELECT *
 FROM "db_source_clientes_dispositivo_sor_01"."dispositivo_autorizado"
 WHERE anomesdia = '20231027'
 LIMIT 20;
+
+
 ```
 
+No Athena (na **mesma região** onde você aplicou o Terraform), execute:
 ![consulta_athena.png](consulta_athena.png)
+
+
+```sql
+SELECT * FROM "AwsDataCatalog"."db_source_clientes_dispositivo_sor_01"."dispositivo_autorizado_2" where ano=2023 and mes = 11 and dia=20  limit 10;
+```
+
+No Athena (na **mesma região** onde você aplicou o Terraform), execute:
+![consulta_athena_table_2.png](consulta_athena_table_2.png)
+
 > **Nota:** No console do Glue, a aba **Partitions** pode aparecer como **Partitions (0)**.
 > Isso é esperado quando você usa **Partition Projection**, pois as partições são calculadas no momento da consulta e não ficam persistidas no catálogo.
 
@@ -114,7 +126,9 @@ LIMIT 20;
 
 ## 🧩 Partition Projection
 
-A tabela é particionada por `anomesdia` (string) no formato `yyyyMMdd`.
+A primeira tabela é particionada por `anomesdia` (string) no formato `yyyyMMdd`.
+A segunda tabela é particionada por `ano=${ano}/mes=${mes}/dia=${dia}` (integer) no formato `int`.
+
 
 Com Partition Projection:
 
@@ -125,6 +139,7 @@ Com Partition Projection:
 Exemplo de template (conceito):
 
 * `s3://<bucket>/<tabela>/anomesdia=${anomesdia}/`
+* `s3://<bucket>/<tabela_2>/ano=${ano}/mes=${mes}/dia=${dia}`
 
 ---
 
@@ -133,11 +148,12 @@ Exemplo de template (conceito):
 > Ajuste os defaults conforme seus arquivos `.tf`.
 
 | Variável             | Descrição                                     | Exemplo                                   |
-| -------------------- | --------------------------------------------- | ----------------------------------------- |
+|----------------------| --------------------------------------------- |-------------------------------------------|
 | `control_account`    | (Opcional) Account ID usado como `catalog_id` | `"123456789012"`                          |
 | `sor_s3bucket`       | (Opcional) Nome do bucket SOR                 | `"corp-sor-sa-east-1-123456789012"`       |
 | `sor_db_name_source` | Nome do Glue Database                         | `"db_source_clientes_dispositivo_sor_01"` |
 | `sor_table_name`     | Nome da tabela no Glue/Athena                 | `"dispositivo_autorizado"`                |
+| `sor_table_name_2`   | Nome da tabela no Glue/Athena                 | `"dispositivo_autorizado_2"`              |
 
 Exemplo de `terraform.tfvars`:
 
@@ -147,6 +163,7 @@ Exemplo de `terraform.tfvars`:
 
 sor_db_name_source = "db_source_clientes_dispositivo_sor_01"
 sor_table_name     = "dispositivo_autorizado"
+sor_table_name_2     = "dispositivo_autorizado_2"
 ```
 
 ---
@@ -183,6 +200,8 @@ Sempre filtre por partição, por exemplo:
 
 ```sql
 WHERE anomesdia BETWEEN '20231001' AND '20231031'
+-- OU
+WHERE ano=2023 AND mes = 11 AND dia=20
 ```
 
 

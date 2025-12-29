@@ -40,3 +40,15 @@ resource "aws_s3_object" "upload_amostra" {
     aws_s3_bucket_public_access_block.sor_bucket_access
   ]
 }
+
+resource "aws_s3_object" "upload_amostra_2" {
+  bucket = local.sor_s3bucket
+  key    = "${var.sor_table_name_2}/ano=2023/mes=11/dia=20/dados_dispositivo_amostra.parquet"
+  source = "dados_dispositivo_amostra_20.parquet"
+  etag   = filemd5("dados_dispositivo_amostra_20.parquet")
+
+  depends_on = [
+    aws_s3_bucket.sor_bucket,
+    aws_s3_bucket_public_access_block.sor_bucket_access
+  ]
+}
