@@ -124,21 +124,7 @@ resource "aws_glue_catalog_table" "tb2_gov" {
     "projection.dia.range"  = "1,31"
     "projection.dia.digits" = "2"
 
-    "storage.location.template" = "s3://${local.sor_s3bucket}/${var.sor_table_name_2}/ano=$${ano}/mes=$${mes}/dia=$${dia}"
-
-
-    # Define que a partição 'anomesdia' é do tipo data
-    #"projection.anomesdia.type"   = "date"
-    # Define o formato que você está usando nas pastas do S3
-    #"projection.anomesdia.format" = "yyyyMMdd"
-    # Define o intervalo de datas que o Athena deve considerar
-    #"projection.anomesdia.range"  = "20230101,NOW"
-    # Define o intervalo de tempo (1 dia)
-    #"projection.anomesdia.interval"      = "1"
-    #"projection.anomesdia.interval.unit" = "DAYS"
-    # Indica ao Glue como montar o caminho no S3
-    #"storage.location.template" = "${local.sor_s3bucket}/controles-cliente-gestao-dispositivo-efetuada/anomesdia=$${anomesdia}"
-    #"storage.location.template" = "s3://${local.sor_s3bucket}/${var.sor_table_name}/anomesdia=$${anomesdia}"
+    "storage.location.template" = "s3://${local.sor_s3bucket}/${var.sor_table_name_2}/ano=$${ano}/mes=$${mes}/dia=$${dia}/"
   }
 
   partition_keys {
@@ -164,7 +150,7 @@ resource "aws_glue_catalog_table" "tb2_gov" {
       serialization_library = "org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe"
 
       parameters = {
-        "serialization.format" = 1
+        "serialization.format" = "1"
       }
     }
 
