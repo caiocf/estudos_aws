@@ -145,7 +145,7 @@ FROM tutorial_glue.cliente_campos_dropados
 WHERE dt = date_format(current_date, '%Y-%m-%d')
 LIMIT 10;
 ```
-
+![consulta_athena.png](consulta_athena.png)
 ---
 
 ## 🧪 Troubleshooting rápido
