@@ -56,7 +56,7 @@ dyf_out = DynamicFrame.fromDF(df, glueContext, "dyf_out")
 
 # Script generated for node Amazon S3
 EvaluateDataQuality().process_rows(frame=DropFields_node1767193261260, ruleset=DEFAULT_DATA_QUALITY_RULESET, publishing_options={"dataQualityEvaluationContext": "EvaluateDataQuality_node1767193145663", "enableDataQualityResultsPublishing": True}, additional_options={"dataQualityResultsPublishing.strategy": "BEST_EFFORT", "observations.scope": "ALL"})
-AmazonS3_node1767193562659 = glueContext.getSink(path=output_path, connection_type="s3", updateBehavior="UPDATE_IN_DATABASE", partitionKeys=["dt"], enableUpdateCatalog=True, transformation_ctx="AmazonS3_node1767193562659")
+AmazonS3_node1767193562659 = glueContext.getSink(path=output_path, connection_type="s3", updateBehavior="UPDATE_IN_DATABASE", partitionKeys=["dt"], enableUpdateCatalog=False, transformation_ctx="AmazonS3_node1767193562659")
 AmazonS3_node1767193562659.setCatalogInfo(catalogDatabase=db_name,catalogTableName=table_name)
 AmazonS3_node1767193562659.setFormat("glueparquet", compression="lz4")
 
