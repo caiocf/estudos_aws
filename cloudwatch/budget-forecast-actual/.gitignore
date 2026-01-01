@@ -1,0 +1,55 @@
+# ==========================================
+# Terraform
+# ==========================================
+# Ignora o diretório de trabalho local do Terraform (provedores e módulos)
+**/.terraform/*
+
+# Ignora arquivos de estado (devem ser armazenados em backend remoto, ex: S3)
+*.tfstate
+*.tfstate.*
+
+# Ignora variáveis sensíveis ou locais
+*.tfvars
+*.tfvars.json
+override.tf
+override.tf.json
+
+# Ignora logs de erro
+crash.log
+
+# .terraform.lock.hcl é geralmente versionado, mas pode ser ignorado se preferir
+# .terraform.lock.hcl
+
+# ==========================================
+# Python
+# ==========================================
+# Arquivos compilados
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Diretórios de ambiente virtual
+venv/
+.venv/
+env/
+ENV/
+
+# Arquivos de variáveis de ambiente
+.env
+
+# ==========================================
+# Arquivos de Dados e Binários (Específico do Projeto)
+# ==========================================
+# Ignora arquivos Parquet gerados localmente para evitar estouro de limite no Git [cite: 4, 5]
+*.parquet
+
+# Ignora arquivos compactados (evita erros de upload no GitHub) [cite: 9]
+*.zip
+*.tar.gz
+*.rar
+
+# Logs do sistema e IDEs
+.DS_Store
+.vscode/
+.idea/
+*.log
