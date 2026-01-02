@@ -161,7 +161,7 @@ Abaixo está a representação **visual** do Glue Job (Glue Studio), que pode se
 
 # Consulta Athena
 
-![relatorio_vendas_athena.png](relatorio_vendas_athena.png)
+![relatorio_Venda_athena.png](relatorio_Venda_athena.png)
 
 ## 🧹 Cleanup
 
