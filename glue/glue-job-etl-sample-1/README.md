@@ -179,3 +179,4 @@ terraform destroy
 - AWS Glue Studio — Visual jobs e transforms: https://docs.aws.amazon.com/glue/latest/ug/edit-job-in-glue-studio.html
 - AWS Glue — Job parameters (`--extra-py-files` / `--job-bookmark-option`): https://docs.aws.amazon.com/glue/latest/dg/aws-glue-programming-etl-glue-arguments.html
 - AWS Glue - Permissões Glue Python modules - https://docs.aws.amazon.com/pt_br/glue/latest/dg/getting-started-min-privs-job.html
+- AWS Glue - Modulo Python já fornecidos no Glue - https://docs.aws.amazon.com/pt_br/glue/latest/dg/aws-glue-programming-python-libraries.html
