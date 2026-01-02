@@ -1,4 +1,5 @@
-# Terraform — AWS Glue ETL (Customers + Orders) → Parquet (Silver/Gold) com Job Bookmarks e agendamento
+# Terraform — AWS Glue ETL (C
+ustomers + Orders) → Parquet (Silver/Gold) com Job Bookmarks e agendamento
 
 Este repositório provisiona (via **Terraform**) um pipeline simples de **ETL com AWS Glue (Spark)** usando **AWS Glue Studio (Visual Job)**.
 
@@ -147,6 +148,8 @@ isso indica que o job não recebeu as libs do Glue Studio. Solução:
 Abaixo está a representação **visual** do Glue Job (Glue Studio), que pode ser recriada/importada a partir do arquivo:
 
 - [`MeuETL_ImportIU-ConsoleAWS.json`](MeuETL_ImportIU-ConsoleAWS.json)
+
+![glue-job.png](glue-job.png)
 
 ### Observações
 
