@@ -10,12 +10,12 @@ variable "bucket_name" {
 
 variable "bronze_prefix" {
   type    = string
-  default = "bronzer/customers/"
+  default = "bronzer/"
 }
 
 variable "silver_prefix" {
   type    = string
-  default = "silver/customers/"
+  default = "silver/"
 }
 
 variable "scripts_prefix" {
@@ -25,7 +25,7 @@ variable "scripts_prefix" {
 
 variable "glue_job_name" {
   type    = string
-  default = "csv-to-parquet-dropfields"
+  default = "relatorio-vendas-por-estados-canal-vendas-periodo"
 }
 
 variable "glue_version" {

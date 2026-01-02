@@ -1,0 +1,1161 @@
+{
+	"jobConfig": {
+		"name": "MeuETL1",
+		"description": "",
+		"role": "arn:aws:iam::413026843963:role/glue-tutorial-role-2",
+		"command": "glueetl",
+		"version": "5.0",
+		"runtime": null,
+		"workerType": "G.1X",
+		"numberOfWorkers": 10,
+		"maxCapacity": 10,
+		"jobRunQueuingEnabled": false,
+		"maxRetries": 0,
+		"timeout": 480,
+		"maxConcurrentRuns": 1,
+		"security": "none",
+		"scriptName": "MeuETL1.py",
+		"scriptLocation": "s3://aws-glue-assets-413026843963-us-east-1/scripts/",
+		"language": "python-3",
+		"spark": true,
+		"sparkConfiguration": "standard",
+		"jobParameters": [],
+		"tags": [],
+		"jobMode": "VISUAL_MODE",
+		"createdOn": "2026-01-02T17:33:50.792Z",
+		"developerMode": false,
+		"connectionsList": [],
+		"temporaryDirectory": "s3://aws-glue-assets-413026843963-us-east-1/temporary/",
+		"glueHiveMetastore": true,
+		"etlAutoTuning": true,
+		"metrics": true,
+		"observabilityMetrics": true,
+		"pythonPath": "s3://aws-glue-studio-transforms-510798373988-prod-us-east-1/gs_common.py,s3://aws-glue-studio-transforms-510798373988-prod-us-east-1/gs_to_timestamp.py,s3://aws-glue-studio-transforms-510798373988-prod-us-east-1/gs_format_timestamp.py",
+		"bookmark": "job-bookmark-enable",
+		"sparkPath": "s3://aws-glue-assets-413026843963-us-east-1/sparkHistoryLogs/",
+		"flexExecution": false,
+		"minFlexWorkers": null,
+		"maintenanceWindow": null,
+		"dependentPath": "",
+		"additionalPythonModules": ""
+	},
+	"dag": {
+		"node-1767376483293": {
+			"nodeId": "node-1767376483293",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [
+				"node-1767376358142"
+			],
+			"name": "order_ts To Timestamp",
+			"generatedNodeName": "order_tsToTimestamp_node1767376483293",
+			"classification": "Transform",
+			"type": "DynamicTransform",
+			"parameters": [
+				{
+					"name": "colName",
+					"value": [
+						"order_ts"
+					],
+					"isOptional": null,
+					"type": "str",
+					"listType": null
+				},
+				{
+					"name": "colType",
+					"value": [
+						"autodetect"
+					],
+					"isOptional": null,
+					"type": "str",
+					"listType": null
+				},
+				{
+					"name": "newColName",
+					"value": [
+						"order_ts_formatado"
+					],
+					"isOptional": true,
+					"type": "str",
+					"listType": null
+				}
+			],
+			"functionName": "gs_to_timestamp",
+			"path": "s3://aws-glue-studio-transforms-510798373988-prod-us-east-1/gs_to_timestamp.py",
+			"version": "1.0.0",
+			"transformName": "gs_to_timestamp",
+			"outputSchemas": [
+				[
+					{
+						"key": "cli_state",
+						"fullPath": [
+							"cli_state"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "cli_name",
+						"fullPath": [
+							"cli_name"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "cli_status",
+						"fullPath": [
+							"cli_status"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "amount",
+						"fullPath": [
+							"amount"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "currency",
+						"fullPath": [
+							"currency"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "customer_id",
+						"fullPath": [
+							"customer_id"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "cli_created_at",
+						"fullPath": [
+							"cli_created_at"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "order_ts",
+						"fullPath": [
+							"order_ts"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "order_id",
+						"fullPath": [
+							"order_id"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "cli_city",
+						"fullPath": [
+							"cli_city"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "status",
+						"fullPath": [
+							"status"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "cli_email",
+						"fullPath": [
+							"cli_email"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "channel",
+						"fullPath": [
+							"channel"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "cli_customer_id",
+						"fullPath": [
+							"cli_customer_id"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "order_ts_formatado",
+						"fullPath": [
+							"order_ts_formatado"
+						],
+						"type": "timestamp",
+						"glueStudioType": null,
+						"children": null
+					}
+				]
+			],
+			"parentsValid": true,
+			"calculatedType": "",
+			"codeGenVersion": 2
+		},
+		"node-1767375118721": {
+			"nodeId": "node-1767375118721",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [],
+			"name": "Amazon S3 - Clientes",
+			"generatedNodeName": "AmazonS3Clientes_node1767375118721",
+			"classification": "DataSource",
+			"type": "S3",
+			"isCatalog": false,
+			"format": "csv",
+			"paths": [
+				"s3://meu-tutorial-glue-2/bronzer/customers/"
+			],
+			"compressionType": null,
+			"exclusions": [],
+			"groupFiles": null,
+			"groupSize": null,
+			"recurse": true,
+			"maxBand": null,
+			"maxFilesInBand": null,
+			"additionalOptions": {
+				"boundedSize": null,
+				"boundedFiles": null,
+				"enableSamplePath": false,
+				"samplePath": "s3://meu-tutorial-glue-2/bronzer/customers/ano=2023/mes=10/dia=28/customers_20251231T235959Z_3f2a1c7e.csv",
+				"boundedOption": null
+			},
+			"separator": ",",
+			"escaper": "",
+			"quoteChar": "\"",
+			"multiline": null,
+			"withHeader": true,
+			"writeHeader": null,
+			"skipFirst": null,
+			"optimizePerformance": false,
+			"outputSchemas": [
+				[
+					{
+						"key": "customer_id",
+						"fullPath": [
+							"customer_id"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "name",
+						"fullPath": [
+							"name"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "email",
+						"fullPath": [
+							"email"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "status",
+						"fullPath": [
+							"status"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "phone",
+						"fullPath": [
+							"phone"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "phone 2",
+						"fullPath": [
+							"phone 2"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "address",
+						"fullPath": [
+							"address"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "city",
+						"fullPath": [
+							"city"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "state",
+						"fullPath": [
+							"state"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "created_at",
+						"fullPath": [
+							"created_at"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					}
+				]
+			],
+			"calculatedType": "",
+			"codeGenVersion": 2
+		},
+		"node-1767376243390": {
+			"nodeId": "node-1767376243390",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [
+				"node-1767375896503"
+			],
+			"name": "Custom Transform",
+			"generatedNodeName": "CustomTransform_node1767376243390",
+			"classification": "Transform",
+			"type": "CustomCode",
+			"code": "from awsglue.dynamicframe import DynamicFrame, DynamicFrameCollection\nfrom pyspark.sql.functions import col, trim\n\n# Pega o primeiro DynamicFrame que chega do node pai\nin_dyf = dfc.select(list(dfc.keys())[0])\n\n# Converte para DataFrame para usar withColumn/filter\ndf = in_dyf.toDF()\n\n# Trim nas colunas\ndf = (df\n      .withColumn(\"cli_email\", trim(col(\"cli_email\")))\n      .withColumn(\"cli_name\",  trim(col(\"cli_name\")))\n)\n\n# Filtro de qualidade: email não nulo e não vazio após trim\ndf = df.filter(col(\"cli_email\").isNotNull() & (col(\"cli_email\") != \"\"))\n\n# Volta para DynamicFrame\nout_dyf = DynamicFrame.fromDF(df, glueContext, \"out_dyf\")\n\n# Retorna como DynamicFrameCollection\nreturn DynamicFrameCollection({\"out\": out_dyf}, glueContext)",
+			"className": "MyTransform",
+			"outputSchemas": [
+				[
+					{
+						"key": "cli_state",
+						"fullPath": [
+							"cli_state"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "cli_name",
+						"fullPath": [
+							"cli_name"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "cli_status",
+						"fullPath": [
+							"cli_status"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "amount",
+						"fullPath": [
+							"amount"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "currency",
+						"fullPath": [
+							"currency"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "customer_id",
+						"fullPath": [
+							"customer_id"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "cli_created_at",
+						"fullPath": [
+							"cli_created_at"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "order_ts",
+						"fullPath": [
+							"order_ts"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "order_id",
+						"fullPath": [
+							"order_id"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "cli_city",
+						"fullPath": [
+							"cli_city"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "status",
+						"fullPath": [
+							"status"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "cli_email",
+						"fullPath": [
+							"cli_email"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "channel",
+						"fullPath": [
+							"channel"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "cli_customer_id",
+						"fullPath": [
+							"cli_customer_id"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					}
+				]
+			],
+			"parentsValid": true,
+			"calculatedType": "",
+			"codeGenVersion": 2
+		},
+		"node-1767376948037": {
+			"nodeId": "node-1767376948037",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [
+				"node-1767376635423"
+			],
+			"name": "Amazon S3",
+			"generatedNodeName": "AmazonS3_node1767376948037",
+			"classification": "DataSink",
+			"type": "S3",
+			"streamingBatchInterval": 100,
+			"format": "glueparquet",
+			"compression": "snappy",
+			"numberTargetPartitions": "0",
+			"path": "s3://meu-tutorial-glue-2/silver/",
+			"partitionKeys": [],
+			"schemaChangePolicy": {
+				"enableUpdateCatalog": true,
+				"updateBehavior": "UPDATE_IN_DATABASE",
+				"database": "default",
+				"table": "relatorio_vendas"
+			},
+			"updateCatalogOptions": "schemaAndPartitions",
+			"autoDataQuality": {
+				"isEnabled": true,
+				"evaluationContext": "EvaluateDataQuality_node1767374231467"
+			},
+			"calculatedType": "",
+			"codeGenVersion": 2
+		},
+		"node-1767375734134": {
+			"nodeId": "node-1767375734134",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [
+				"node-1767375091279",
+				"node-1767375866942"
+			],
+			"name": "Join",
+			"generatedNodeName": "Join_node1767375734134",
+			"classification": "Transform",
+			"type": "Join",
+			"joinType": "equijoin",
+			"columns": [
+				{
+					"from": "node-1767375091279",
+					"keys": [
+						"customer_id"
+					]
+				},
+				{
+					"from": "node-1767375866942",
+					"keys": [
+						"cli_customer_id"
+					]
+				}
+			],
+			"columnConditions": [
+				"="
+			],
+			"parentsValid": true,
+			"calculatedType": "",
+			"codeGenVersion": 2
+		},
+		"node-1767376016998": {
+			"nodeId": "node-1767376016998",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [
+				"node-1767375118721"
+			],
+			"name": "Filter - status customers = ACTIVE",
+			"generatedNodeName": "FilterstatuscustomersACTIVE_node1767376016998",
+			"classification": "Transform",
+			"type": "Filter",
+			"logicalOperator": "AND",
+			"filters": [
+				{
+					"operation": "REGEX",
+					"negated": false,
+					"values": [
+						{
+							"type": "CONSTANT",
+							"value": [
+								"ACTIVE"
+							]
+						},
+						{
+							"type": "COLUMNEXTRACTED",
+							"value": "status"
+						}
+					]
+				}
+			],
+			"parentsValid": true,
+			"calculatedType": "",
+			"codeGenVersion": 2
+		},
+		"node-1767375180919": {
+			"nodeId": "node-1767375180919",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [
+				"node-1767376016998"
+			],
+			"name": "Drop Duplicates Customer_id",
+			"generatedNodeName": "DropDuplicatesCustomer_id_node1767375180919",
+			"classification": "Transform",
+			"type": "DropDuplicates",
+			"parentsValid": true,
+			"calculatedType": "",
+			"columns": [
+				"customer_id"
+			],
+			"codeGenVersion": 2
+		},
+		"node-1767375866942": {
+			"nodeId": "node-1767375866942",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [
+				"node-1767375180919"
+			],
+			"name": "Renamed keys for Join",
+			"generatedNodeName": "RenamedkeysforJoin_node1767375866942",
+			"classification": "Transform",
+			"type": "ApplyMapping",
+			"mapping": [
+				{
+					"toKey": "cli_customer_id",
+					"fromPath": [
+						"customer_id"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "cli_name",
+					"fromPath": [
+						"name"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "cli_email",
+					"fromPath": [
+						"email"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "cli_status",
+					"fromPath": [
+						"status"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "cli_phone",
+					"fromPath": [
+						"phone"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "cli_phone 2",
+					"fromPath": [
+						"phone 2"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "cli_address",
+					"fromPath": [
+						"address"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "cli_city",
+					"fromPath": [
+						"city"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "cli_state",
+					"fromPath": [
+						"state"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "cli_created_at",
+					"fromPath": [
+						"created_at"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": false,
+					"children": null
+				}
+			],
+			"parentsValid": true,
+			"calculatedType": "",
+			"codeGenVersion": 2
+		},
+		"node-1767376358142": {
+			"nodeId": "node-1767376358142",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [
+				"node-1767376243390"
+			],
+			"name": "Collection - Converte Collection para DataFrame",
+			"generatedNodeName": "CollectionConverteCollectionparaDataFrame_node1767376358142",
+			"classification": "Transform",
+			"type": "SelectFromCollection",
+			"index": 0,
+			"parentsValid": true,
+			"calculatedType": "",
+			"codeGenVersion": 2
+		},
+		"node-1767375091279": {
+			"nodeId": "node-1767375091279",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [],
+			"name": "Amazon S3 - Vendas",
+			"generatedNodeName": "AmazonS3Vendas_node1767375091279",
+			"classification": "DataSource",
+			"type": "S3",
+			"isCatalog": false,
+			"format": "csv",
+			"paths": [
+				"s3://meu-tutorial-glue-2/bronzer/orders/"
+			],
+			"compressionType": null,
+			"exclusions": [],
+			"groupFiles": null,
+			"groupSize": null,
+			"recurse": true,
+			"maxBand": null,
+			"maxFilesInBand": null,
+			"additionalOptions": {
+				"boundedSize": null,
+				"boundedFiles": null,
+				"enableSamplePath": false,
+				"samplePath": "s3://meu-tutorial-glue-2/bronzer/orders/ano=2023/mes=10/dia=28/orders_20251231T235959Z_2c2a1cab.csv",
+				"boundedOption": null
+			},
+			"separator": ",",
+			"escaper": "",
+			"quoteChar": "\"",
+			"multiline": null,
+			"withHeader": true,
+			"writeHeader": null,
+			"skipFirst": null,
+			"optimizePerformance": false,
+			"outputSchemas": [
+				[
+					{
+						"key": "order_id",
+						"fullPath": [
+							"order_id"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "customer_id",
+						"fullPath": [
+							"customer_id"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "order_ts",
+						"fullPath": [
+							"order_ts"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "amount",
+						"fullPath": [
+							"amount"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "currency",
+						"fullPath": [
+							"currency"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "channel",
+						"fullPath": [
+							"channel"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "status",
+						"fullPath": [
+							"status"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					}
+				]
+			],
+			"calculatedType": "",
+			"codeGenVersion": 2
+		},
+		"node-1767375896503": {
+			"nodeId": "node-1767375896503",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [
+				"node-1767375734134"
+			],
+			"name": "Drop Fields - customer PII",
+			"generatedNodeName": "DropFieldscustomerPII_node1767375896503",
+			"classification": "Transform",
+			"type": "DropFields",
+			"paths": [
+				"cli_phone 2",
+				"cli_address",
+				"cli_phone"
+			],
+			"parentsValid": true,
+			"calculatedType": "",
+			"codeGenVersion": 2
+		},
+		"node-1767376549605": {
+			"nodeId": "node-1767376549605",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [
+				"node-1767376483293"
+			],
+			"name": "order_ts_formatado Format Timestamp yyyy-MM-dd",
+			"generatedNodeName": "order_ts_formatadoFormatTimestampyyyyMMdd_node1767376549605",
+			"classification": "Transform",
+			"type": "DynamicTransform",
+			"parameters": [
+				{
+					"name": "colName",
+					"value": [
+						"order_ts_formatado"
+					],
+					"isOptional": null,
+					"type": "str",
+					"listType": null
+				},
+				{
+					"name": "dateFormat",
+					"value": [
+						"yyyy-MM-dd"
+					],
+					"isOptional": null,
+					"type": "str",
+					"listType": null
+				},
+				{
+					"name": "newColName",
+					"displayName": "Formatted new column name",
+					"isOptional": true,
+					"type": "str",
+					"description": "column name for the formatted column, if not specified, instead of a new column, the existing one is replaced.",
+					"index": 2
+				}
+			],
+			"functionName": "gs_format_timestamp",
+			"path": "s3://aws-glue-studio-transforms-510798373988-prod-us-east-1/gs_format_timestamp.py",
+			"version": "1.0.0",
+			"transformName": "gs_format_timestamp",
+			"outputSchemas": [
+				[
+					{
+						"key": "cli_state",
+						"fullPath": [
+							"cli_state"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "cli_name",
+						"fullPath": [
+							"cli_name"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "cli_status",
+						"fullPath": [
+							"cli_status"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "amount",
+						"fullPath": [
+							"amount"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "currency",
+						"fullPath": [
+							"currency"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "customer_id",
+						"fullPath": [
+							"customer_id"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "cli_created_at",
+						"fullPath": [
+							"cli_created_at"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "order_ts",
+						"fullPath": [
+							"order_ts"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "order_id",
+						"fullPath": [
+							"order_id"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "cli_city",
+						"fullPath": [
+							"cli_city"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "status",
+						"fullPath": [
+							"status"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "cli_email",
+						"fullPath": [
+							"cli_email"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "channel",
+						"fullPath": [
+							"channel"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "cli_customer_id",
+						"fullPath": [
+							"cli_customer_id"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "order_ts_formatado",
+						"fullPath": [
+							"order_ts_formatado"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					}
+				]
+			],
+			"parentsValid": true,
+			"calculatedType": "",
+			"codeGenVersion": 2
+		},
+		"node-1767376635423": {
+			"nodeId": "node-1767376635423",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [
+				"node-1767383560992"
+			],
+			"name": "Aggregate - Relatorio de Vendas",
+			"generatedNodeName": "AggregateRelatoriodeVendas_node1767376635423",
+			"classification": "Transform",
+			"type": "Aggregate",
+			"parentsValid": true,
+			"calculatedType": "",
+			"groups": [
+				"cli_state",
+				"channel",
+				"order_ts_formatado"
+			],
+			"aggs": [
+				{
+					"column": "amount",
+					"aggFunc": "sum"
+				}
+			],
+			"codeGenVersion": 2,
+			"outputSchemas": [
+				[
+					{
+						"key": "cli_state",
+						"fullPath": [
+							"cli_state"
+						],
+						"type": "string"
+					},
+					{
+						"key": "channel",
+						"fullPath": [
+							"channel"
+						],
+						"type": "string"
+					},
+					{
+						"key": "order_ts_formatado",
+						"fullPath": [
+							"order_ts_formatado"
+						],
+						"type": "string"
+					},
+					{
+						"key": "sum(amount)",
+						"fullPath": [
+							"sum(amount)"
+						],
+						"type": "double"
+					}
+				]
+			]
+		},
+		"node-1767383560992": {
+			"classification": "Transform",
+			"type": "Filter",
+			"name": "Filter status PAID",
+			"inputs": [
+				"node-1767376549605"
+			],
+			"logicalOperator": "AND",
+			"filters": [
+				{
+					"operation": "REGEX",
+					"negated": false,
+					"values": [
+						{
+							"type": "CONSTANT",
+							"value": "PAID"
+						},
+						{
+							"type": "COLUMNEXTRACTED",
+							"value": "status"
+						}
+					]
+				}
+			],
+			"iconUrl": "https://c.d.cdn.console.awsstatic.com/a/v1/BXFSSYFB4RUI5JZEYPSY6ALA3U2CSQVA3SPVWMGTHR32Y3DQG2FQ/static/media/Filter.97e966c8.svg",
+			"generatedNodeName": "FilterstatusPAID_node1767383560992",
+			"codeGenVersion": 2
+		}
+	},
+	"hasBeenSaved": false,
+	"usageProfileName": null
+}

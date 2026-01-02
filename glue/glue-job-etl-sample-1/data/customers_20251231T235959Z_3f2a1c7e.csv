@@ -1,0 +1,11 @@
+customer_id,name,email,status,phone,phone 2,address,city,state,created_at
+C001,João da Silva,joao.silva@example.com,ACTIVE,(11)99999-0001,,"Rua A, 100",São Paulo,SP,2025-12-30
+C002,Maria Souza,maria.souza@example.com,ACTIVE,(21)98888-0002,,"Av B, 200",Rio de Janeiro,RJ,2025-12-30
+C003,Pedro Santos,pedro.santos@example.com,INACTIVE,(31)97777-0003,,"Rua C, 300",Belo Horizonte,MG,2025-12-29
+C004,Ana Lima,,ACTIVE,(41)96666-0004,,"Rua D, 400",Curitiba,PR,2025-12-31
+C005,Joao Silva,joao.silva+2@example.com,ACTIVE,(11)99999-0001,,R. A 100,Sao Paulo,SP,2025-12-31
+C006,Maria de Souza,maria.souza@example.com,ACTIVE,(21)98888-0002,,"Avenida B, 200",Rio de Janeiro,RJ,2025-12-31
+C007,Pedro dos Santos,pedro.santos@example.com,ACTIVE,(31)97777-0003,,"Rua C, 300",Belo Horizonte,MG,2025-12-31
+C008,Empresa ACME LTDA,contato@acme.com,ACTIVE,(11)90000-1234,,"Rua Industrial, 10",São Paulo,SP,2025-12-28
+C009,ACME Ltda,contato@acme.com.br,ACTIVE,(11)90000-1234,,Rua Industrial 10,Sao Paulo,SP,2025-12-31
+C010,Cliente Sem Email,,ACTIVE,(51)95555-0005,,"Rua E, 500",Porto Alegre,RS,2025-12-31
