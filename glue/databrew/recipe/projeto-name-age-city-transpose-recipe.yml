@@ -1,0 +1,19 @@
+- Action:
+    Operation: TRANSPOSE
+    Parameters:
+      aggregateFunction: COLLECT_LIST
+      newColumn: Attribute
+      pivotColumns: '["Name"]'
+      valueColumns: '["Age","City"]'
+- Action:
+    Operation: UNNEST_ARRAY
+    Parameters:
+      removeSourceColumn: 'true'
+      sourceColumn: Alice
+      targetColumn: Alice_unnested
+- Action:
+    Operation: UNNEST_ARRAY
+    Parameters:
+      removeSourceColumn: 'true'
+      sourceColumn: Frank
+      targetColumn: Frank_unnested

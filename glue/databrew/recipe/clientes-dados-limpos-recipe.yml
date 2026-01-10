@@ -1,0 +1,33 @@
+- Action:
+    Operation: FILL_WITH_AVERAGE
+    Parameters:
+      sourceColumn: Age
+- Action:
+    Operation: ADD_SUFFIX
+    Parameters:
+      pattern: .com
+      sourceColumn: Email
+  ConditionExpressions:
+    - Condition: NOT_MATCHES
+      Value: .+\.com
+      TargetColumn: Email
+- Action:
+    Operation: TOKENIZATION
+    Parameters:
+      customStopWords: '[]'
+      delimiter: ' '
+      expandContractions: DISABLED
+      sourceColumn: Feedback
+      stemmingMode: DISABLED
+      stopWordRemovalMode: DEFAULT
+      targetColumn: Feedback_tokenized
+- Action:
+    Operation: FILL_WITH_CUSTOM
+    Parameters:
+      columnDataType: string
+      sourceColumn: Feedback_tokenized
+      value: NADA
+  ConditionExpressions:
+    - Condition: IS_INVALID
+      Value: string
+      TargetColumn: Feedback_tokenized

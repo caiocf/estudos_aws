@@ -1,0 +1,9 @@
+CustomerID,Name,Age,Email,PurchaseAmount,Feedback
+C001,John Doe,29,john.doe@example.com,120.50,Excellent service!
+C002,Jane Smith,,jane.smith@example.com,89.99,Good experience overall
+C003,,35,sam.taylor@example.com,45.00,Fast shipping but packaging was poor
+C004,Emily Davis,42,emily.davis@example.com,,Very satisfied
+C005,Michael Chen,31,michael.chen@example,98.75,Loved the product!
+C006,Raj Patel,,raj.patel@example.com,110.20,Prompt delivery and easy checkout
+C007,Lisa Wong,27,lisa.wong@example.com,,Great quality!
+C008,Omar Ali,38,omar.ali@example.com,76.90,

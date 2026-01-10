@@ -1,0 +1,6 @@
+- Action:
+    Operation: PIVOT
+    Parameters:
+      aggregateFunction: COLLECT_LIST
+      sourceColumn: Quarter
+      valueColumn: Sales
