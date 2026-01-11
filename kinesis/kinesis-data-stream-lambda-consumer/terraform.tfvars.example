@@ -1,0 +1,9 @@
+aws_region     = "us-east-1"
+stream_name    = "stream-output"
+shard_count    = 2
+retention_hours = 24
+
+# IMPORTANT: S3 bucket name must be globally unique
+s3_bucket_name = "my-kinesis-output-bucket-1234567890"
+
+lambda_name    = "kinesis-to-s3-consumer"
