@@ -90,6 +90,13 @@ INSERT INTO public.warehouse_managers VALUES
 
 ---
 
+## Distribution (distribuição)
+O padrão hoje é DISTSTYLE AUTO (o Redshift decide entre ALL/EVEN conforme tamanho/uso).
+
+## Sort key (o “índice” do Redshift)
+Se você não declarar SORTKEY/INTERLEAVED SORTKEY, então a tabela fica sem sort key (unsorted).
+Resultado: suas queries tendem a fazer mais scan, porque o Redshift não consegue “pular blocos” tão bem pelos zone maps
+
 ## 2️⃣ Criar Usuários e Role de Leitura
 
 ```sql
