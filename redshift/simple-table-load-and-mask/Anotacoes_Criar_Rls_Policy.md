@@ -50,13 +50,24 @@ DROP USER IF EXISTS lwilson;
 ## 1️⃣ Tabelas do Exemplo (inventário + mapeamento)
 
 ```sql
--- Tabela com inventário (tem warehouse_id)
+-- Tabela com inventário (tem warehouse_id) com Compound sort key
+-- Se você não declarar SORTKEY/INTERLEAVED SORTKEY, então a tabela fica sem sort key (unsorted).
 CREATE TABLE public.warehouse_inventory (
   item_id      INT,
   item_name    VARCHAR(100),
   quantity     INT,
   warehouse_id INT
-);
+)  SORTKEY (item_id, warehouse_id);
+
+-- Tabela com Interleaved sort key
+-- Se você não declarar SORTKEY/INTERLEAVED SORTKEY, então a tabela fica sem sort key (unsorted).
+CREATE TABLE fact_events (
+                            tenant_id bigint,
+                            event_time timestamp,
+                            event_type varchar(50),
+                            amount decimal(12,2)
+)
+   INTERLEAVED SORTKEY (tenant_id, event_time, event_type);
 
 INSERT INTO public.warehouse_inventory VALUES
 (101, 'LED Light Bulb', 120, 1),
