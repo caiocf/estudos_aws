@@ -2,16 +2,24 @@
 resource "aws_glue_catalog_database" "main" {
   name         = var.database_name
   location_uri = "s3://${aws_s3_bucket.glue_lake.bucket}/"
+  description  = "Data Lake database managed by Lake Formation"
 
-  description = "Data Lake database managed by Lake Formation"
+  depends_on = [
+    aws_lakeformation_data_lake_settings.main,
+    aws_lakeformation_resource.bucket
+  ]
 }
-
 
 # Glue Catalog Table - Customers
 resource "aws_glue_catalog_table" "customers" {
   name          = "customers"
   database_name = aws_glue_catalog_database.main.name
   description   = "Customer data table"
+  table_type    = "EXTERNAL_TABLE"
+
+  parameters = {
+    EXTERNAL = "TRUE"
+  }
 
   storage_descriptor {
     location      = "s3://${aws_s3_bucket.glue_lake.bucket}/customers/"
@@ -50,5 +58,8 @@ resource "aws_glue_catalog_table" "customers" {
     }
   }
 
-  depends_on = [aws_lakeformation_permissions.admin_database]
+  depends_on = [
+    aws_glue_catalog_database.main,
+    aws_lakeformation_resource.bucket
+  ]
 }

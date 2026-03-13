@@ -25,14 +25,15 @@ Este projeto provisiona uma infraestrutura completa de Data Lake usando AWS Lake
 - **VPC Endpoint Glue**: Interface endpoint para acesso ao Glue
 
 ### IAM
-- **IAM User**: Usuário para administração do Lake Formation
+- **IAM User**: Usuário para consultas no Lake Formation
+- **IAM Role**: Role dedicada para acesso aos dados do Lake Formation
 
 ## Pré-requisitos
 
 - Terraform >= 1.0
 - AWS CLI configurado
 - Credenciais AWS com permissões adequadas
-- Service-linked role `AWSServiceRoleForLakeFormationDataAccess` criada
+- Usuário IAM existente especificado na variável `existing_admin_user`
 
 ## Variáveis
 
@@ -47,31 +48,25 @@ Este projeto provisiona uma infraestrutura completa de Data Lake usando AWS Lake
 
 ## Como Usar
 
-### 1. Criar a Service-Linked Role (se não existir)
-
-```bash
-aws iam create-service-linked-role --aws-service-name lakeformation.amazonaws.com
-```
-
-### 2. Inicializar o Terraform
+### 1. Inicializar o Terraform
 
 ```bash
 terraform init
 ```
 
-### 3. Planejar as mudanças
+### 2. Planejar as mudanças
 
 ```bash
 terraform plan
 ```
 
-### 4. Aplicar a infraestrutura
+### 3. Aplicar a infraestrutura
 
 ```bash
 terraform apply
 ```
 
-### 5. Consultar dados via Athena
+### 4. Consultar dados via Athena
 
 ```sql
 SELECT * FROM "meu-database"."customers" LIMIT 10;
@@ -110,7 +105,7 @@ Para destruir todos os recursos:
 terraform destroy
 ```
 
-**Nota**: A service-linked role não será deletada automaticamente e precisa ser removida manualmente se necessário.
+**Nota**: O projeto usa uma IAM role dedicada em vez da service-linked role para evitar problemas na destruição dos recursos.
 
 ## Boas Práticas Implementadas
 
@@ -125,9 +120,9 @@ terraform destroy
 
 ## Troubleshooting
 
-### Erro: Service role name has been taken
+### Erro: Usuário admin não encontrado
 
-A service-linked role já existe. O Terraform usa a role existente via data source.
+Certifique-se de que o usuário especificado na variável `existing_admin_user` existe no IAM.
 
 ### Erro: Insufficient Lake Formation permissions
 

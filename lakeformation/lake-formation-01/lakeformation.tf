@@ -1,28 +1,25 @@
-# Data source para buscar configurações atuais do Lake Formation
+# Busca as configurações atuais do Lake Formation para não sobrescrever admins existentes
 data "aws_lakeformation_data_lake_settings" "current" {}
 
-# Configuração dos administradores do Data Lake
-# IMPORTANTE: Este recurso é criado primeiro e destruído por último
+# Mantém o administrador já existente.
+# O principal usado para executar o Terraform não deve depender de
+# aws_lakeformation_permissions do mesmo state para conseguir destruir o database.
 resource "aws_lakeformation_data_lake_settings" "main" {
   admins = distinct(concat(
     tolist(data.aws_lakeformation_data_lake_settings.current.admins),
-    [
-      data.aws_iam_user.existing_admin.arn,
-      aws_iam_user.aws_user.arn
-    ]
+    [data.aws_iam_user.existing_admin.arn]
   ))
-
-  lifecycle {
-    create_before_destroy = true
-  }
 }
 
-# Registro do bucket S3 como Data Lake Location
+# Registra o bucket S3 no Lake Formation usando uma role dedicada.
+# Isso evita o erro no destroy relacionado à service-linked role da AWS.
 resource "aws_lakeformation_resource" "bucket" {
   arn                   = aws_s3_bucket.glue_lake.arn
-  use_service_linked_role = true
-  hybrid_access_enabled = false # Lake Formation only mode (recomendado)
+  role_arn              = aws_iam_role.lakeformation_data_access.arn
+  hybrid_access_enabled = false
 
-  depends_on = [aws_lakeformation_data_lake_settings.main,aws_lakeformation_permissions.admin_database]
-  
+  depends_on = [
+    aws_lakeformation_data_lake_settings.main,
+    aws_iam_role_policy.lakeformation_data_access
+  ]
 }

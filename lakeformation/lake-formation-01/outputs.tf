@@ -35,6 +35,11 @@ output "iam_user_arn" {
   value       = aws_iam_user.aws_user.arn
 }
 
+output "lakeformation_data_access_role_arn" {
+  description = "ARN da role usada para registrar a data location no Lake Formation"
+  value       = aws_iam_role.lakeformation_data_access.arn
+}
+
 output "vpc_endpoint_s3_id" {
   description = "ID do VPC Endpoint S3 Gateway"
   value       = aws_vpc_endpoint.s3.id
