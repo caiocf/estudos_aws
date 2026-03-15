@@ -1,13 +1,12 @@
 # Busca as configurações atuais do Lake Formation para não sobrescrever admins existentes
 data "aws_lakeformation_data_lake_settings" "current" {}
 
-# Mantém o administrador já existente.
-# O principal usado para executar o Terraform não deve depender de
-# aws_lakeformation_permissions do mesmo state para conseguir destruir o database.
+# Mantem os admins ja existentes do Lake Formation e adiciona o principal
+# atual usado pelo provider/AWS CLI como admin do Data Lake.
 resource "aws_lakeformation_data_lake_settings" "main" {
   admins = distinct(concat(
     tolist(data.aws_lakeformation_data_lake_settings.current.admins),
-    [data.aws_iam_user.existing_admin.arn]
+    [local.current_lakeformation_admin_arn]
   ))
 }
 

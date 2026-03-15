@@ -1,4 +1,4 @@
-# Outputs para facilitar acesso às informações dos recursos criados
+# Outputs para facilitar acesso as informacoes dos recursos criados
 
 output "bucket_name" {
   description = "Nome do bucket S3 do Data Lake"
@@ -8,6 +8,16 @@ output "bucket_name" {
 output "bucket_arn" {
   description = "ARN do bucket S3 do Data Lake"
   value       = aws_s3_bucket.glue_lake.arn
+}
+
+output "athena_results_bucket_name" {
+  description = "Nome do bucket dedicado aos resultados do Athena"
+  value       = aws_s3_bucket.athena_results.id
+}
+
+output "athena_results_bucket_arn" {
+  description = "ARN do bucket dedicado aos resultados do Athena"
+  value       = aws_s3_bucket.athena_results.arn
 }
 
 output "database_name" {
@@ -26,13 +36,33 @@ output "athena_workgroup_name" {
 }
 
 output "iam_user_name" {
-  description = "Nome do usuário IAM criado"
+  description = "Nome do usuario IAM criado"
   value       = aws_iam_user.aws_user.name
 }
 
 output "iam_user_arn" {
-  description = "ARN do usuário IAM criado"
+  description = "ARN do usuario IAM criado"
   value       = aws_iam_user.aws_user.arn
+}
+
+output "iam_user_2_name" {
+  description = "Nome do segundo usuario IAM criado"
+  value       = aws_iam_user.aws_user_2.name
+}
+
+output "iam_user_2_arn" {
+  description = "ARN do segundo usuario IAM criado"
+  value       = aws_iam_user.aws_user_2.arn
+}
+
+output "iam_user_3_name" {
+  description = "Nome do terceiro usuario IAM criado"
+  value       = aws_iam_user.aws_user_3.name
+}
+
+output "iam_user_3_arn" {
+  description = "ARN do terceiro usuario IAM criado"
+  value       = aws_iam_user.aws_user_3.arn
 }
 
 output "lakeformation_data_access_role_arn" {

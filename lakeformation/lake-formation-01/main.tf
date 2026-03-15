@@ -22,16 +22,6 @@ resource "aws_s3_object" "customers_csv" {
   }
 }
 
-resource "aws_s3_object" "athena_folder" {
-  bucket = aws_s3_bucket.glue_lake.id
-  key    = "athena/"
-
-  tags = {
-    Name      = "Athena Results Folder"
-    ManagedBy = "Terraform"
-  }
-}
-
 resource "aws_s3_object" "scripts_folder" {
   bucket = aws_s3_bucket.glue_lake.id
   key    = "scripts/"
