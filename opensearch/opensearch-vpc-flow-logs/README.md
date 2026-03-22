@@ -207,7 +207,7 @@ Estimativa base de custo por 1 hora de laboratório:
 Exemplo simples de 1 hora com algum uso:
 
 - custo base do cluster e segredo: **~US$ 0,43**
-- se, durante essa 1 hora, os `VPC Flow Logs` enviarem cerca de `100 MB` de dados para o `CloudWatch Logs`, isso representa aproximadamente `0,1 GB` de ingestão. Considerando um preço de referência de `US$ 0,50 por GB` ingerido, o acréscimo fica em torno de **US$ 0,05**
+- se, durante essa 1 hora, os `VPC Flow Logs` enviarem cerca de `100 MB` de dados para o `CloudWatch Logs`, isso representa aproximadamente `0,1 GB` de ingestão. Considerando um preço de referência de `US$ 0,50 por GB` ingerido, o acréscimo fica em torno de **US$ 0,05**. Referência: https://aws.amazon.com/cloudwatch/pricing/
 - no caso da `AWS Lambda`, o custo desse laboratório tende a ser pequeno em comparação ao OpenSearch. Como referência, a AWS informa um `Free Tier` mensal de **1 milhão de requisições** e **400.000 GB-seconds** por mês. Para detalhes atualizados, consulte: https://aws.amazon.com/lambda/pricing/
 - total aproximado desse cenário: **~US$ 0,48 por 1 hora**
 
