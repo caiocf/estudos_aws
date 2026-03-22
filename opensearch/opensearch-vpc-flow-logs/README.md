@@ -136,7 +136,7 @@ Observação sobre a primeira abertura do Dashboards:
 
 Exemplo da tela `Discover` com o índice `vpc-flow-logs-*`:
 
-![Tela Discover com o índice vpc-flow-logs-*](tela-discovery_index-vpc-flow-logs_1.png)
+![Tela Discover com o índice vpc-flow-logs-*](docs/images/tela-discovery_index-vpc-flow-logs_1.png)
 
 Exemplo de filtro:
 
