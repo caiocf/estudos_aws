@@ -1,0 +1,7 @@
+aws_region              = "us-east-1"
+domain_name             = "meucluser-opensearce"
+availability_zone_count = 3
+master_user_name        = "admin"
+engine_version          = "OpenSearch_3.5"
+instance_type           = "m5.large.search"
+data_node_count         = 3

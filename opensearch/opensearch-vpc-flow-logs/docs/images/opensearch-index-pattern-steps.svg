@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+  <title id="title">Como criar o index pattern no OpenSearch Dashboards</title>
+  <desc id="desc">Fluxo visual com cinco passos para criar o index pattern vpc-flow-logs-* usando o campo de tempo arroba timestamp.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#f5f1e8"/>
+      <stop offset="100%" stop-color="#e7efe8"/>
+    </linearGradient>
+    <style>
+      .title { font: 700 34px 'Segoe UI', Arial, sans-serif; fill: #1f2a1f; }
+      .subtitle { font: 400 18px 'Segoe UI', Arial, sans-serif; fill: #415141; }
+      .step-title { font: 700 22px 'Segoe UI', Arial, sans-serif; fill: #17311f; }
+      .step-text { font: 400 18px 'Segoe UI', Arial, sans-serif; fill: #2e4532; }
+      .note { font: 600 18px 'Segoe UI', Arial, sans-serif; fill: #5d3a00; }
+      .mono { font: 700 18px Consolas, 'Courier New', monospace; fill: #0f3b3b; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="720" fill="url(#bg)"/>
+  <rect x="40" y="36" width="1120" height="648" rx="28" fill="#fffdf8" stroke="#d6d0c3" stroke-width="2"/>
+
+  <text x="80" y="92" class="title">Criando o index pattern no OpenSearch Dashboards</text>
+  <text x="80" y="126" class="subtitle">Esse passo é feito uma vez para o Discover enxergar os índices enviados pela Lambda.</text>
+
+  <g transform="translate(80,170)">
+    <rect width="480" height="126" rx="20" fill="#e7f2ea" stroke="#8daf94" stroke-width="2"/>
+    <circle cx="44" cy="42" r="24" fill="#244f33"/>
+    <text x="36" y="50" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="700" fill="#ffffff">1</text>
+    <text x="84" y="44" class="step-title">Abra o Dashboards</text>
+    <text x="84" y="78" class="step-text">Use a URL retornada por</text>
+    <text x="84" y="108" class="mono">terraform output dashboards_url</text>
+  </g>
+
+  <g transform="translate(640,170)">
+    <rect width="480" height="126" rx="20" fill="#edf2fb" stroke="#93a3ca" stroke-width="2"/>
+    <circle cx="44" cy="42" r="24" fill="#2f4d89"/>
+    <text x="36" y="50" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="700" fill="#ffffff">2</text>
+    <text x="84" y="44" class="step-title">Entre no menu de gestão</text>
+    <text x="84" y="78" class="step-text">Vá em Dashboards Management</text>
+    <text x="84" y="108" class="step-text">e depois em Index Patterns ou Data Views</text>
+  </g>
+
+  <g transform="translate(80,336)">
+    <rect width="480" height="126" rx="20" fill="#fff1e2" stroke="#d4a36a" stroke-width="2"/>
+    <circle cx="44" cy="42" r="24" fill="#9b5e14"/>
+    <text x="36" y="50" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="700" fill="#ffffff">3</text>
+    <text x="84" y="44" class="step-title">Crie o padrão de índice</text>
+    <text x="84" y="78" class="step-text">Preencha o nome abaixo:</text>
+    <text x="84" y="108" class="mono">vpc-flow-logs-*</text>
+  </g>
+
+  <g transform="translate(640,336)">
+    <rect width="480" height="126" rx="20" fill="#f0eaf8" stroke="#a793c4" stroke-width="2"/>
+    <circle cx="44" cy="42" r="24" fill="#5f4b82"/>
+    <text x="36" y="50" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="700" fill="#ffffff">4</text>
+    <text x="84" y="44" class="step-title">Escolha o campo de tempo</text>
+    <text x="84" y="78" class="step-text">Selecione o campo abaixo para</text>
+    <text x="84" y="108" class="mono">@timestamp</text>
+  </g>
+
+  <g transform="translate(80,502)">
+    <rect width="1040" height="118" rx="20" fill="#e7f4f4" stroke="#7eaead" stroke-width="2"/>
+    <circle cx="44" cy="38" r="24" fill="#1e6460"/>
+    <text x="36" y="46" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="700" fill="#ffffff">5</text>
+    <text x="84" y="40" class="step-title">Explore os logs em Discover</text>
+    <text x="84" y="74" class="step-text">Depois que a VPC default gerar tráfego, os documentos vão aparecer nos índices diários.</text>
+    <text x="84" y="104" class="step-text">Campos úteis: srcaddr, dstaddr, action, packets, bytes, interface_id e account_id.</text>
+  </g>
+
+  <rect x="650" y="548" width="430" height="44" rx="12" fill="#fff4cf" stroke="#d8b24a" stroke-width="2"/>
+  <text x="670" y="577" class="note">Shards e réplicas não são definidos nesse passo.</text>
+</svg>

@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="760" viewBox="0 0 1280 760" role="img" aria-labelledby="title desc">
+  <title id="title">Discover filtering VPC Flow Logs</title>
+  <desc id="desc">Illustrative screenshot of OpenSearch Dashboards Discover filtering VPC Flow Logs with action ACCEPT and bytes greater than zero.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#f3efe7"/>
+      <stop offset="100%" stop-color="#e8f0eb"/>
+    </linearGradient>
+    <style>
+      .title { font: 700 32px 'Segoe UI', Arial, sans-serif; fill: #1d2a24; }
+      .label { font: 600 17px 'Segoe UI', Arial, sans-serif; fill: #355046; }
+      .text { font: 400 16px 'Segoe UI', Arial, sans-serif; fill: #31423b; }
+      .mono { font: 700 16px Consolas, 'Courier New', monospace; fill: #163f59; }
+      .table-head { font: 700 15px 'Segoe UI', Arial, sans-serif; fill: #203027; }
+      .table-cell { font: 400 15px Consolas, 'Courier New', monospace; fill: #2e3932; }
+      .pill { font: 700 15px 'Segoe UI', Arial, sans-serif; fill: #274c34; }
+    </style>
+  </defs>
+
+  <rect width="1280" height="760" fill="url(#bg)"/>
+  <rect x="34" y="28" width="1212" height="704" rx="26" fill="#fffdf9" stroke="#d7d2c8" stroke-width="2"/>
+
+  <text x="72" y="76" class="title">OpenSearch Dashboards - Discover (illustrative example)</text>
+
+  <rect x="72" y="108" width="1136" height="56" rx="16" fill="#eef4f1" stroke="#b8c9c1" stroke-width="2"/>
+  <text x="94" y="143" class="label">Data view:</text>
+  <text x="190" y="143" class="mono">vpc-flow-logs-*</text>
+  <text x="430" y="143" class="label">Time field:</text>
+  <text x="536" y="143" class="mono">@timestamp</text>
+
+  <rect x="72" y="184" width="1136" height="74" rx="18" fill="#f7f2e6" stroke="#d3c29b" stroke-width="2"/>
+  <text x="94" y="213" class="label">Search / filter</text>
+  <rect x="94" y="224" width="820" height="24" rx="10" fill="#fffaf0" stroke="#d7c795"/>
+  <text x="108" y="241" class="mono">action: ACCEPT and bytes &gt; 0</text>
+  <rect x="940" y="214" width="122" height="30" rx="15" fill="#dff0e2" stroke="#85ad8c"/>
+  <text x="968" y="234" class="pill">action: ACCEPT</text>
+  <rect x="1078" y="214" width="100" height="30" rx="15" fill="#e3eef8" stroke="#93abc4"/>
+  <text x="1100" y="234" class="pill">bytes &gt; 0</text>
+
+  <rect x="72" y="280" width="262" height="400" rx="18" fill="#eef3f8" stroke="#b8c6d6" stroke-width="2"/>
+  <text x="94" y="314" class="label">Available fields</text>
+  <text x="94" y="350" class="text">srcaddr</text>
+  <text x="94" y="382" class="text">dstaddr</text>
+  <text x="94" y="414" class="text">action</text>
+  <text x="94" y="446" class="text">bytes</text>
+  <text x="94" y="478" class="text">packets</text>
+  <text x="94" y="510" class="text">interface_id</text>
+  <text x="94" y="542" class="text">account_id</text>
+  <text x="94" y="574" class="text">@timestamp</text>
+
+  <rect x="356" y="280" width="852" height="400" rx="18" fill="#fcfcfa" stroke="#d6ddd8" stroke-width="2"/>
+  <text x="380" y="314" class="label">Results</text>
+
+  <rect x="380" y="336" width="804" height="38" rx="10" fill="#edf3ee" stroke="#c3d0c8"/>
+  <text x="394" y="360" class="table-head">@timestamp</text>
+  <text x="604" y="360" class="table-head">action</text>
+  <text x="698" y="360" class="table-head">srcaddr</text>
+  <text x="846" y="360" class="table-head">dstaddr</text>
+  <text x="998" y="360" class="table-head">bytes</text>
+  <text x="1084" y="360" class="table-head">interface_id</text>
+
+  <rect x="380" y="386" width="804" height="52" rx="10" fill="#ffffff" stroke="#e3e7e3"/>
+  <text x="394" y="418" class="table-cell">2026-03-21T23:18:42Z</text>
+  <text x="604" y="418" class="table-cell">ACCEPT</text>
+  <text x="698" y="418" class="table-cell">10.0.1.14</text>
+  <text x="846" y="418" class="table-cell">52.95.110.1</text>
+  <text x="998" y="418" class="table-cell">1840</text>
+  <text x="1084" y="418" class="table-cell">eni-01ab23cd45</text>
+
+  <rect x="380" y="448" width="804" height="52" rx="10" fill="#f9fbf9" stroke="#e3e7e3"/>
+  <text x="394" y="480" class="table-cell">2026-03-21T23:19:08Z</text>
+  <text x="604" y="480" class="table-cell">ACCEPT</text>
+  <text x="698" y="480" class="table-cell">10.0.1.14</text>
+  <text x="846" y="480" class="table-cell">34.231.18.22</text>
+  <text x="998" y="480" class="table-cell">512</text>
+  <text x="1084" y="480" class="table-cell">eni-01ab23cd45</text>
+
+  <rect x="380" y="510" width="804" height="52" rx="10" fill="#ffffff" stroke="#e3e7e3"/>
+  <text x="394" y="542" class="table-cell">2026-03-21T23:20:11Z</text>
+  <text x="604" y="542" class="table-cell">ACCEPT</text>
+  <text x="698" y="542" class="table-cell">10.0.2.33</text>
+  <text x="846" y="542" class="table-cell">18.215.244.7</text>
+  <text x="998" y="542" class="table-cell">2944</text>
+  <text x="1084" y="542" class="table-cell">eni-0a9b87c6d5</text>
+
+  <rect x="380" y="592" width="804" height="60" rx="12" fill="#fff5d7" stroke="#d7b457" stroke-width="2"/>
+  <text x="402" y="618" class="label">Note</text>
+  <text x="402" y="642" class="text">This is an illustrative image for the README. Your Discover screen can vary a bit by OpenSearch version.</text>
+</svg>
