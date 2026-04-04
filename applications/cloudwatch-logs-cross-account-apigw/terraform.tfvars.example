@@ -1,0 +1,18 @@
+region              = "us-east-1"
+source_profile      = "source"
+destination_profile = "destination"
+
+source_account_id      = "111111111111"
+destination_account_id = "222222222222"
+
+project_name            = "study-apigw-cross-account-logs"
+stream_name             = "central-apigw-access-logs"
+destination_name        = "central-apigw-access-logs-destination"
+access_log_group_name   = "/aws/apigateway/study-http-api/access"
+retention_in_days       = 7
+subscription_filter_pattern = ""
+
+tags = {
+  Project = "study-apigw-cross-account-logs"
+  Owner   = "userABC"
+}
