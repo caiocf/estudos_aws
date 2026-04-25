@@ -115,8 +115,7 @@ aws sts get-caller-identity
 ### 1. Clone o projeto
 
 ```bash
-git clone https://github.com/SEU-USUARIO/s3-inventory-batch-copy-terraform.git
-cd s3-inventory-batch-copy-terraform
+cd s3-inventory-batch-copy
 ```
 
 ### 2. Configure variáveis
