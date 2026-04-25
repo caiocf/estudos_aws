@@ -1,0 +1,11 @@
+aws_region          = "us-east-1"
+project_name        = "s3-inventory-batch-copy-demo"
+inventory_frequency = "Daily"
+object_count         = 3
+
+# Keep false on the first apply.
+enable_batch_job = false
+
+# Fill this after AWS generates the S3 Inventory manifest.json.
+# inventory_manifest_key = "inventory/<source-bucket>/all-objects-inventory/<timestamp>/manifest.json"
+inventory_manifest_key = ""
