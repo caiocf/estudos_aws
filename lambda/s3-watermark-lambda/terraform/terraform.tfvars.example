@@ -1,0 +1,8 @@
+aws_region         = "us-east-1"
+project_name       = "s3-watermark-demo"
+environment        = "study"
+source_prefix      = "uploads"
+destination_prefix = "watermarked"
+watermark_text     = "CONFIDENTIAL"
+watermark_opacity  = 90
+output_format      = "ORIGINAL"
